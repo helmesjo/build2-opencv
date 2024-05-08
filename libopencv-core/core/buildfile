@@ -1,6 +1,7 @@
 intf_libs = # Interface dependencies.
 impl_libs = # Implementation dependencies.
 #import xxxx_libs += libhello%lib{hello}
+import intf_libs += libopencv-config%lib{opencv-config}
 
 # Public headers.
 #

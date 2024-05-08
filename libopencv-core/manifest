@@ -12,3 +12,4 @@ package-url: https://github.com/build2-packaging/build2-opencv
 package-email: packaging@build2.org ; Mailing list.
 depends: * build2 >= 0.16.0
 depends: * bpkg >= 0.16.0
+depends: libopencv-config == $
