@@ -11,13 +11,13 @@
 #cmakedefine CV_DISABLE_OPTIMIZATION
 
 /* Compile for 'real' NVIDIA GPU architectures */
-#cmakedefine CUDA_ARCH_BIN
+#define CUDA_ARCH_BIN "${OPENCV_CUDA_ARCH_BIN}"
 
 /* NVIDIA GPU features are used */
-#cmakedefine CUDA_ARCH_FEATURES
+#define CUDA_ARCH_FEATURES "${OPENCV_CUDA_ARCH_FEATURES}"
 
 /* Compile for 'virtual' NVIDIA PTX architectures */
-#cmakedefine CUDA_ARCH_PTX
+#define CUDA_ARCH_PTX "${OPENCV_CUDA_ARCH_PTX}"
 
 /* AMD's Basic Linear Algebra Subprograms Library*/
 #cmakedefine HAVE_CLAMDBLAS

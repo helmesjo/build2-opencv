@@ -11,7 +11,7 @@ h{cvconfig}: in{cvconfig}
     BUILD_SHARED_LIBS = false
     CV_ENABLE_INTRINSICS = true
     CV_DISABLE_OPTIMIZATION  = false
-    CUDA_ARCH_BIN = false
+    CUDA_ARCH_BIN = ""
     CUDA_ARCH_FEATURES = ""
     CUDA_ARCH_PTX = ""
     HAVE_CLAMDBLAS  = false 
