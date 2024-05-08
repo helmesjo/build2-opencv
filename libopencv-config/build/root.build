@@ -7,7 +7,7 @@ cxx.std = latest
 using cxx
 using c
 
-hxx{*}: extension = hxx
+hxx{*}: extension = hpp
 ixx{*}: extension = ixx
 txx{*}: extension = txx
-cxx{*}: extension = cxx
+cxx{*}: extension = cpp
