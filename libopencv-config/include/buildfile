@@ -26,7 +26,7 @@ h{cvconfig}: in{cvconfig}
     HAVE_D3D11 = true 
     HAVE_D3D10 = true 
     HAVE_D3D9 = true 
-    HAVE_EIGEN = true 
+    HAVE_EIGEN = false 
     HAVE_GDAL  = false 
     HAVE_HALIDE  = false 
     HAVE_VULKAN  = false 
@@ -82,11 +82,7 @@ hxx{custom_hal}: in{custom_hal.hpp.in}
   autoconf.substitutions = _hal_includes@$temp_hal_empty
 }
 
-<<<<<<< HEAD
 opencv2/hxx{opencv_modules}: in{opencv_modules.hpp.in}
-=======
-hxx{opencv_modules}: in{opencv_modules.hpp.in}
->>>>>>> 3d5fd6a (Add opencv_modules as symlink and in libconfig defines)
 {
   autoconf.flavor = cmake
   OPENCV_ENABLE_NONFREE = false
