@@ -17,3 +17,6 @@
 # Use `binary` to make sure certain files are never auto-detected as text.
 #
 #*.png binary
+
+libopencv-core/core/src symlink=dir
+libopencv-core/include/opencv2 symlink=dir
