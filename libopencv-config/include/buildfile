@@ -3,7 +3,7 @@ using autoconf
 intf_libs = # Interface dependencies.
 #import xxxx_libs += libhello%lib{hello}
 
-lib{opencv-config}: {h}{cvconfig}
+lib{opencv-config}: {h}{cvconfig} {hxx}{custom_hal}
 
 h{cvconfig}: in{cvconfig}
 {
@@ -66,6 +66,12 @@ h{cvconfig}: in{cvconfig}
     HAVE_OPENVX  = false 
     OPENCV_TRACE = true 
     HAVE_QUIRC  = false 
+}
+
+temp_hal_empty = ""
+hxx{custom_hal}: in{custom_hal.hpp.in}
+{
+  autoconf.substitutions  = _hal_includes@$temp_hal_empty
 }
 
 # Export options.
