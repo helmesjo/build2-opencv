@@ -1,0 +1,88 @@
+using autoconf
+
+intf_libs = # Interface dependencies.
+#import xxxx_libs += libhello%lib{hello}
+
+lib{opencv-config}: {h}{cvconfig}
+
+h{cvconfig}: in{cvconfig}
+{
+    autoconf.flavor = cmake
+    BUILD_SHARED_LIBS = false
+    CV_ENABLE_INTRINSICS = true
+    CV_DISABLE_OPTIMIZATION  = false
+    CUDA_ARCH_BIN = false
+    CUDA_ARCH_FEATURES = ""
+    CUDA_ARCH_PTX = ""
+    HAVE_CLAMDBLAS  = false 
+    HAVE_CLAMDFFT  = false 
+    HAVE_CLP  = false 
+    HAVE_CUDA  = false 
+    HAVE_CUBLAS  = false 
+    HAVE_CUDNN  = false 
+    HAVE_CUFFT  = false 
+    HAVE_DIRECTX = true 
+    HAVE_DIRECTX_NV12 = true 
+    HAVE_D3D11 = true 
+    HAVE_D3D10 = true 
+    HAVE_D3D9 = true 
+    HAVE_EIGEN = true 
+    HAVE_GDAL  = false 
+    HAVE_HALIDE  = false 
+    HAVE_VULKAN  = false 
+    HAVE_INTTYPES_H  = false 
+    HAVE_IPP  = false 
+    HAVE_IPP_ICV  = false 
+    HAVE_IPP_IW  = false 
+    HAVE_IPP_IW_LL  = false 
+    HAVE_OPENJPEG  = false 
+    HAVE_JASPER  = false 
+    HAVE_AVIF = false
+    HAVE_JPEG = true 
+    HAVE_LIBPNG_PNG_H  = false 
+    HAVE_GDCM  = false 
+    HAVE_NVCUVID  = false 
+    HAVE_NVCUVID_HEADER  = false 
+    HAVE_DYNLINK_NVCUVID_HEADER  = false 
+    HAVE_NVCUVENC  = false 
+    HAVE_OPENCL = true 
+    HAVE_OPENCL_STATIC  = false 
+    HAVE_OPENCL_SVM  = false 
+    HAVE_OPENCL_D3D11_NV = true 
+    HAVE_OPENEXR  = false 
+    HAVE_OPENGL  = false 
+    HAVE_PNG = true
+    HAVE_SPNG  = false 
+    HAVE_PTHREAD  = false 
+    HAVE_PTHREADS_PF  = false 
+    HAVE_TBB  = false 
+    HAVE_HPX  = false 
+    HAVE_TIFF  = false 
+    WORDS_BIGENDIAN  = false 
+    HAVE_VA  = false 
+    HAVE_VA_INTEL  = false 
+    HAVE_LAPACK  = false 
+    ENABLE_INSTRUMENTATION  = false 
+    HAVE_OPENVX  = false 
+    OPENCV_TRACE = true 
+    HAVE_QUIRC  = false 
+}
+
+# Export options.
+#
+out_pfx = [dir_path] $out_root/include/
+src_pfx = [dir_path] $src_root/include/
+
+lib{opencv-config}:
+{
+  cxx.export.poptions = "-I$out_pfx" "-I$src_pfx"
+  cxx.export.libs = $intf_libs
+}
+
+# Install recreating subdirectories.
+#
+{h}{*}:
+{
+  install         = include/
+  install.subdirs = true
+}

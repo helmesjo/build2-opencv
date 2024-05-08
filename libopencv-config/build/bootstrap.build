@@ -1,0 +1,6 @@
+project = libopencv-config
+
+using version
+using config
+using install
+using dist

@@ -1,2 +1,5 @@
 : 1
 location: libopencv-core/
+
+:
+location: libopencv-config/
