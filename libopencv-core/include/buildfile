@@ -1,6 +1,93 @@
-pub_hdrs = {hxx ixx txx}{**}
+using autoconf 
 
-./: $pub_hdrs
+intf_libs = # Interface dependencies.
+
+lib{opencv-core}: {hxx}{opencl_kernels_core \
+  arithm.simd_declarations.hpp.in \
+  convert.simd_declarations.hpp.in \
+  convert_scale.simd_declarations.hpp.in \
+  count_non_zero.simd_declarations.hpp.in \
+  has_non_zero.simd_declarations.hpp.in \
+  mathfuncs_core.simd_declarations.hpp.in \
+  matmul.simd_declarations.hpp.in \
+  mean.simd_declarations.hpp.in \
+  merge.simd_declarations.hpp.in \
+  split.simd_declarations.hpp.in \
+  stat.simd_declarations.hpp.in \
+  sum.simd_declarations.hpp.in} 
+
+hxx{opencl_kernels_core}: in{opencl_kernels_core.hpp.in}
+{
+}
+
+hxx{arithm.simd_declarations.hpp}: in{arithm.simd_declarations.hpp.in}
+{
+  CV_CPU_SIMD_FILENAME = $path.posix_string([path] $src_root/core/src/arithm.simd.hpp)
+}
+
+hxx{convert.simd_declarations.hpp}: in{convert.simd_declarations.hpp.in}
+{
+  CV_CPU_SIMD_FILENAME = $path.posix_string([path] $src_root/core/src/convert.simd.hpp)
+}
+
+hxx{convert_scale.simd_declarations.hpp}: in{convert_scale.simd_declarations.hpp.in}
+{
+  CV_CPU_SIMD_FILENAME = $path.posix_string([path] $src_root/core/src/convert_scale.simd.hpp)
+}
+
+hxx{count_non_zero.simd_declarations.hpp}: in{count_non_zero.simd_declarations.hpp.in}
+{
+  CV_CPU_SIMD_FILENAME = $path.posix_string([path] $src_root/core/src/count_non_zero.simd.hpp)
+}
+
+hxx{has_non_zero.simd_declarations.hpp}: in{has_non_zero.simd_declarations.hpp.in}
+{
+  #TODO: Find out where this is generated, can find no reference to it when building with CMake
+}
+
+hxx{mathfuncs_core.simd_declarations.hpp}: in{mathfuncs_core.simd_declarations.hpp.in}
+{
+  CV_CPU_SIMD_FILENAME = $path.posix_string([path] $src_root/core/src/mathfuncs_core.simd.hpp)
+}
+
+hxx{matmul.simd_declarations.hpp}: in{matmul.simd_declarations.hpp.in}
+{
+  CV_CPU_SIMD_FILENAME = $path.posix_string([path] $src_root/core/src/matmul.simd.hpp)
+}
+
+hxx{mean.simd_declarations.hpp}: in{mean.simd_declarations.hpp.in}
+{
+  CV_CPU_SIMD_FILENAME = $path.posix_string([path] $src_root/core/src/mean.simd.hpp)
+}
+
+hxx{merge.simd_declarations.hpp}: in{merge.simd_declarations.hpp.in}
+{
+  CV_CPU_SIMD_FILENAME = $path.posix_string([path] $src_root/core/src/merge.simd.hpp)
+}
+
+hxx{split.simd_declarations.hpp}: in{split.simd_declarations.hpp.in}
+{
+  CV_CPU_SIMD_FILENAME = $path.posix_string([path] $src_root/core/src/split.simd.hpp)
+}
+
+hxx{stat.simd_declarations.hpp}: in{stat.simd_declarations.hpp.in}
+{
+  CV_CPU_SIMD_FILENAME = $path.posix_string([path] $src_root/core/src/stat.simd.hpp)
+}
+
+hxx{sum.simd_declarations.hpp}: in{sum.simd_declarations.hpp.in}
+{
+  CV_CPU_SIMD_FILENAME = $path.posix_string([path] $src_root/core/src/sum.simd.hpp)
+}
+
+out_pfx = [dir_path] $out_root/include/
+src_pfx = [dir_path] $src_root/include/
+
+lib{opencv-config}:
+{
+  cxx.export.poptions = "-I$out_pfx" "-I$src_pfx"
+  cxx.export.libs = $intf_libs
+}
 
 # Install recreating subdirectories.
 #
