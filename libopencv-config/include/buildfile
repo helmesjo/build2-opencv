@@ -2,7 +2,7 @@ using autoconf
 
 intf_libs = # Interface dependencies.
 
-lib{opencv-config}: {h}{cvconfig cv_cpu_config} {hxx}{custom_hal} opencv2/{hxx}{opencv_modules}
+lib{opencv-config}: {h}{cvconfig cv_cpu_config} {hxx}{custom_hal opencv_data_config} opencv2/{hxx}{opencv_modules}
 
 h{cvconfig}: in{cvconfig}
 {
@@ -79,6 +79,11 @@ temp_hal_empty = ""
 hxx{custom_hal}: in{custom_hal.hpp.in}
 {
   autoconf.substitutions = _hal_includes@$temp_hal_empty
+}
+
+# TODO: Check if the defines in this files are actually used anywhere outside CMake
+hxx{opencv_data_config}: in{opencv_data_config.hpp.in}
+{
 }
 
 opencv2/hxx{opencv_modules}: in{opencv_modules.hpp.in}
