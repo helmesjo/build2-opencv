@@ -13,3 +13,4 @@ package-email: packaging@build2.org ; Mailing list.
 depends: * build2 >= 0.16.0
 depends: * bpkg >= 0.16.0
 depends: libopencv-config == $
+depends: libz ^1.2.1200
