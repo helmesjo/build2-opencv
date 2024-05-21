@@ -1,7 +1,6 @@
 using autoconf
 
 intf_libs = # Interface dependencies.
-#import xxxx_libs += libhello%lib{hello}
 
 lib{opencv-config}: {h}{cvconfig cv_cpu_config} {hxx}{custom_hal} opencv2/{hxx}{opencv_modules}
 
@@ -9,7 +8,7 @@ h{cvconfig}: in{cvconfig}
 {
     autoconf.flavor = cmake
     BUILD_SHARED_LIBS = false
-    CV_ENABLE_INTRINSICS = true
+    CV_ENABLE_INTRINSICS = false
     CV_DISABLE_OPTIMIZATION  = false
     CUDA_ARCH_BIN = ""
     CUDA_ARCH_FEATURES = ""
@@ -21,11 +20,11 @@ h{cvconfig}: in{cvconfig}
     HAVE_CUBLAS  = false 
     HAVE_CUDNN  = false 
     HAVE_CUFFT  = false 
-    HAVE_DIRECTX = true 
-    HAVE_DIRECTX_NV12 = true 
-    HAVE_D3D11 = true 
-    HAVE_D3D10 = true 
-    HAVE_D3D9 = true 
+    HAVE_DIRECTX = false 
+    HAVE_DIRECTX_NV12 = false 
+    HAVE_D3D11 = false 
+    HAVE_D3D10 = false 
+    HAVE_D3D9 = false 
     HAVE_EIGEN = false 
     HAVE_GDAL  = false 
     HAVE_HALIDE  = false 
@@ -38,20 +37,20 @@ h{cvconfig}: in{cvconfig}
     HAVE_OPENJPEG  = false 
     HAVE_JASPER  = false 
     HAVE_AVIF = false
-    HAVE_JPEG = true 
+    HAVE_JPEG = false 
     HAVE_LIBPNG_PNG_H  = false 
     HAVE_GDCM  = false 
     HAVE_NVCUVID  = false 
     HAVE_NVCUVID_HEADER  = false 
     HAVE_DYNLINK_NVCUVID_HEADER  = false 
     HAVE_NVCUVENC  = false 
-    HAVE_OPENCL = true 
+    HAVE_OPENCL = false 
     HAVE_OPENCL_STATIC  = false 
     HAVE_OPENCL_SVM  = false 
-    HAVE_OPENCL_D3D11_NV = true 
+    HAVE_OPENCL_D3D11_NV = false 
     HAVE_OPENEXR  = false 
     HAVE_OPENGL  = false 
-    HAVE_PNG = true
+    HAVE_PNG = false
     HAVE_SPNG  = false 
     HAVE_PTHREAD  = false 
     HAVE_PTHREADS_PF  = false 
@@ -64,7 +63,7 @@ h{cvconfig}: in{cvconfig}
     HAVE_LAPACK  = false 
     ENABLE_INSTRUMENTATION  = false 
     HAVE_OPENVX  = false 
-    OPENCV_TRACE = true 
+    OPENCV_TRACE = false 
     HAVE_QUIRC  = false 
 }
 
@@ -103,6 +102,12 @@ lib{opencv-config}:
 # Install recreating subdirectories.
 #
 {h}{*}:
+{
+  install         = include/
+  install.subdirs = true
+}
+
+{hxx cxx}{*}:
 {
   install         = include/
   install.subdirs = true
