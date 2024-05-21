@@ -22,22 +22,30 @@ hxx{opencl_kernels_core}: in{opencl_kernels_core.hpp.in}
 
 hxx{arithm.simd_declarations.hpp}: in{arithm.simd_declarations.hpp.in}
 {
-  CV_CPU_SIMD_FILENAME = $path.posix_string([path] $src_root/core/src/arithm.simd.hpp)
+  SIMD_FILENAME = $path.posix_string([path] $src_root/core/src/arithm.simd.hpp)
+  CV_CPU_SIMD_FILENAME = false
+  CV_CPU_DISPATCH_MODES_ALL = "AVX2, SSE4_1, BASELINE"
 }
 
 hxx{convert.simd_declarations.hpp}: in{convert.simd_declarations.hpp.in}
 {
-  CV_CPU_SIMD_FILENAME = $path.posix_string([path] $src_root/core/src/convert.simd.hpp)
+  SIMD_FILENAME = $path.posix_string([path] $src_root/core/src/convert.simd.hpp)
+  CV_CPU_SIMD_FILENAME = false
+  CV_CPU_DISPATCH_MODES_ALL = "AVX2, BASELINE"
 }
 
 hxx{convert_scale.simd_declarations.hpp}: in{convert_scale.simd_declarations.hpp.in}
 {
-  CV_CPU_SIMD_FILENAME = $path.posix_string([path] $src_root/core/src/convert_scale.simd.hpp)
+  SIMD_FILENAME = $path.posix_string([path] $src_root/core/src/convert_scale.simd.hpp)
+  CV_CPU_SIMD_FILENAME = false
+  CV_CPU_DISPATCH_MODES_ALL = "AVX2, BASELINE"
 }
 
 hxx{count_non_zero.simd_declarations.hpp}: in{count_non_zero.simd_declarations.hpp.in}
 {
-  CV_CPU_SIMD_FILENAME = $path.posix_string([path] $src_root/core/src/count_non_zero.simd.hpp)
+  SIMD_FILENAME = $path.posix_string([path] $src_root/core/src/count_non_zero.simd.hpp)
+  CV_CPU_SIMD_FILENAME = false
+  CV_CPU_DISPATCH_MODES_ALL = "AVX2, BASELINE"
 }
 
 hxx{has_non_zero.simd_declarations.hpp}: in{has_non_zero.simd_declarations.hpp.in}
@@ -47,37 +55,51 @@ hxx{has_non_zero.simd_declarations.hpp}: in{has_non_zero.simd_declarations.hpp.i
 
 hxx{mathfuncs_core.simd_declarations.hpp}: in{mathfuncs_core.simd_declarations.hpp.in}
 {
-  CV_CPU_SIMD_FILENAME = $path.posix_string([path] $src_root/core/src/mathfuncs_core.simd.hpp)
+  SIMD_FILENAME = $path.posix_string([path] $src_root/core/src/mathfuncs_core.simd.hpp)
+  CV_CPU_SIMD_FILENAME = false
+  CV_CPU_DISPATCH_MODES_ALL = "AVX2, AVX, BASELINE"
 }
 
 hxx{matmul.simd_declarations.hpp}: in{matmul.simd_declarations.hpp.in}
 {
-  CV_CPU_SIMD_FILENAME = $path.posix_string([path] $src_root/core/src/matmul.simd.hpp)
+  SIMD_FILENAME = $path.posix_string([path] $src_root/core/src/matmul.simd.hpp)
+  CV_CPU_SIMD_FILENAME = false
+  CV_CPU_DISPATCH_MODES_ALL = "AVX2, BASELINE"
 }
 
 hxx{mean.simd_declarations.hpp}: in{mean.simd_declarations.hpp.in}
 {
-  CV_CPU_SIMD_FILENAME = $path.posix_string([path] $src_root/core/src/mean.simd.hpp)
+  SIMD_FILENAME = $path.posix_string([path] $src_root/core/src/mean.simd.hpp)
+  CV_CPU_SIMD_FILENAME = false
+  CV_CPU_DISPATCH_MODES_ALL = "AVX2, BASELINE"
 }
 
 hxx{merge.simd_declarations.hpp}: in{merge.simd_declarations.hpp.in}
 {
-  CV_CPU_SIMD_FILENAME = $path.posix_string([path] $src_root/core/src/merge.simd.hpp)
+  SIMD_FILENAME = $path.posix_string([path] $src_root/core/src/merge.simd.hpp)
+  CV_CPU_SIMD_FILENAME = false
+  CV_CPU_DISPATCH_MODES_ALL = "AVX2, BASELINE"
 }
 
 hxx{split.simd_declarations.hpp}: in{split.simd_declarations.hpp.in}
 {
-  CV_CPU_SIMD_FILENAME = $path.posix_string([path] $src_root/core/src/split.simd.hpp)
+  SIMD_FILENAME = $path.posix_string([path] $src_root/core/src/split.simd.hpp)
+  CV_CPU_SIMD_FILENAME = false
+  CV_CPU_DISPATCH_MODES_ALL = "AVX2, BASELINE"
 }
 
 hxx{stat.simd_declarations.hpp}: in{stat.simd_declarations.hpp.in}
 {
-  CV_CPU_SIMD_FILENAME = $path.posix_string([path] $src_root/core/src/stat.simd.hpp)
+  SIMD_FILENAME = $path.posix_string([path] $src_root/core/src/stat.simd.hpp)
+  CV_CPU_SIMD_FILENAME = false
+  CV_CPU_DISPATCH_MODES_ALL = "AVX2, SSE4_2, BASELINE"
 }
 
 hxx{sum.simd_declarations.hpp}: in{sum.simd_declarations.hpp.in}
 {
-  CV_CPU_SIMD_FILENAME = $path.posix_string([path] $src_root/core/src/sum.simd.hpp)
+  SIMD_FILENAME = $path.posix_string([path] $src_root/core/src/sum.simd.hpp)
+  CV_CPU_SIMD_FILENAME = false
+  CV_CPU_DISPATCH_MODES_ALL = "AVX2, BASELINE"
 }
 
 out_pfx = [dir_path] $out_root/include/
