@@ -2,7 +2,11 @@ using autoconf
 
 intf_libs = # Interface dependencies.
 
-lib{opencv-config}: {h}{cvconfig cv_cpu_config} {hxx}{custom_hal opencv_data_config} opencv2/{hxx}{opencv_modules}
+h{version_string.inc}: extension = inc
+lib{opencv-config}: {h}{cvconfig cv_cpu_config} \
+  {hxx}{custom_hal opencv_data_config} \
+  {h}{version_string.inc} \
+  opencv2/{hxx}{opencv_modules}
 
 h{cvconfig}: in{cvconfig}
 {
@@ -85,6 +89,8 @@ hxx{custom_hal}: in{custom_hal.hpp.in}
 hxx{opencv_data_config}: in{opencv_data_config.hpp.in}
 {
 }
+
+h{version_string.inc}: in{version_string}
 
 opencv2/hxx{opencv_modules}: in{opencv_modules.hpp.in}
 {
