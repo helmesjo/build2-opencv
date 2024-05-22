@@ -51,6 +51,7 @@ hxx{count_non_zero.simd_declarations.hpp}: in{count_non_zero.simd_declarations.h
 hxx{has_non_zero.simd_declarations.hpp}: in{has_non_zero.simd_declarations.hpp.in}
 {
   #TODO: Find out where this is generated, can find no reference to it when building with CMake
+  CV_CPU_DISPATCH_MODES_ALL = "AVX2, BASELINE"
 }
 
 hxx{mathfuncs_core.simd_declarations.hpp}: in{mathfuncs_core.simd_declarations.hpp.in}
