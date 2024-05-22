@@ -67,8 +67,8 @@ h{cvconfig}: in{cvconfig}
     HAVE_QUIRC  = false 
 }
 
-temp_cpu_empty_baseline_definitions = ""
-temp_cpu_empty_dispatch_definitions = ""
+temp_cpu_empty_baseline_definitions = "#define CV_CPU_BASELINE_FEATURES 0"
+temp_cpu_empty_dispatch_definitions = "#define CV_CPU_DISPATCH_FEATURES 0"
 h{cv_cpu_config}: in{cv_cpu_config}
 {
   OPENCV_CPU_BASELINE_DEFINITIONS_CONFIGMAKE = $temp_cpu_empty_baseline_definitions
