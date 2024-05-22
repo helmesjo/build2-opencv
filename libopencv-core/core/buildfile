@@ -28,8 +28,7 @@ src_pfx_src = [dir_path] $src_root/core/
 cxx.poptions =+ "-I$out_pfx_src" "-I$src_pfx_src" \
                 "-I$out_pfx_inc" "-I$src_pfx_inc"
 
-#obja{*}: cxx.poptions += -DSRC_STATIC_BUILD
-#objs{*}: cxx.poptions += -DSRC_SHARED_BUILD
+objs{**}: cxx.poptions += -DCVAPI_EXPORTS
 
 # Export options.
 #
@@ -40,9 +39,6 @@ lib{opencv-core}:
   cxx.export.poptions += "-DHAVE_OPENCV_CORE"
   cxx.export.libs = $intf_libs
 }
-
-#liba{opencv-core}: cxx.export.poptions += -DSRC_STATIC
-#libs{opencv-core}: cxx.export.poptions += -DSRC_SHARED
 
 # For pre-releases use the complete version to make sure they cannot
 # be used in place of another pre-release or the final version. See
