@@ -1,0 +1,3 @@
+3rdparty/annoy symlink=dir
+3rdparty/mscr symlink=dir
+include/opencv2/features symlink=dir
