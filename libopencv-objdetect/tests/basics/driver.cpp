@@ -1,34 +1,31 @@
-#include <sstream>
-#include <stdexcept>
-
-#include <opencv2/opencv-objdetect.hpp>
+#include <opencv2/objdetect.hpp>
+#include <opencv2/imgproc.hpp>
 
 #undef NDEBUG
 #include <cassert>
 
 int main ()
 {
-  using namespace std;
-  using namespace opencv_objdetect;
-
-  // Basics.
+  // Generate an ArUco marker and detect it back (a plain non-inline
+  // exported class and function).
   //
-  {
-    ostringstream o;
-    say_hello (o, "World");
-    assert (o.str () == "Hello, World!\n");
-  }
+  cv::aruco::Dictionary dict =
+    cv::aruco::getPredefinedDictionary (cv::aruco::DICT_4X4_50);
 
-  // Empty name.
+  cv::Mat marker;
+  dict.generateImageMarker (0, 200, marker);
+
+  // Detection needs a quiet white margin around the marker.
   //
-  try
-  {
-    ostringstream o;
-    say_hello (o, "");
-    assert (false);
-  }
-  catch (const invalid_argument& e)
-  {
-    assert (e.what () == string ("empty name"));
-  }
+  cv::Mat padded;
+  cv::copyMakeBorder (marker, padded, 50, 50, 50, 50,
+                       cv::BORDER_CONSTANT, cv::Scalar (255));
+
+  cv::aruco::ArucoDetector detector (dict);
+  std::vector<std::vector<cv::Point2f>> corners;
+  std::vector<int> ids;
+  detector.detectMarkers (padded, corners, ids);
+
+  assert (ids.size () == 1);
+  assert (ids[0] == 0);
 }
