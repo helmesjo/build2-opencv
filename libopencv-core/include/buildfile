@@ -2,6 +2,19 @@ pub_hdrs = {hxx ixx txx}{**}
 
 ./: $pub_hdrs
 
+# A handful of upstream public headers use a plain .h extension instead of
+# .hpp, so the {hxx}{**} wildcard above (which matches this project's .hpp
+# mapping) does not pick them up. List them explicitly with the extension
+# embedded in the name to override the default.
+#
+./: opencv2/core/hxx{cvdef.h}                 \
+    opencv2/core/hxx{cv_cpu_dispatch.h}       \
+    opencv2/core/hxx{cv_cpu_helper.h}         \
+    opencv2/core/hal/hxx{interface.h}         \
+    opencv2/core/hal/hxx{intrin_legacy_ops.h} \
+    opencv2/core/hal/hxx{msa_macros.h}        \
+    opencv2/core/llapi/hxx{llapi.h}
+
 # Install recreating subdirectories.
 #
 {hxx ixx txx}{*}:
