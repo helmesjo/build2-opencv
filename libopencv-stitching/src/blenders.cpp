@@ -1,0 +1,1 @@
+../../upstream/modules/stitching/src/blenders.cpp

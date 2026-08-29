@@ -1,6 +1,23 @@
 intf_libs = # Interface dependencies.
 impl_libs = # Implementation dependencies.
-#import xxxx_libs += libhello%lib{hello}
+
+# stitching.hpp includes opencv2/core.hpp and opencv2/features.hpp
+# directly, so those are interface dependencies. imgproc is also an
+# interface dependency: opencv2/stitching/detail/warpers.hpp (reached from
+# the public stitching.hpp -> warpers.hpp chain) directly #include's
+# opencv2/imgproc.hpp, so consumers need it resolvable too, not just this
+# package's own compilation. geometry is implementation-only (pulled in by
+# precomp.hpp, not by any public header). flann is genuinely used
+# (matchers.cpp), implementation-only. Eigen usage in
+# exposure_compensate.cpp is #ifdef HAVE_EIGEN-guarded (off), and the
+# optional CUDA/xfeatures2d (opencv_contrib) dependencies are unused with
+# CUDA off and contrib unavailable.
+#
+import intf_libs += libopencv-core%lib{opencv-core}
+import intf_libs += libopencv-features%lib{opencv-features}
+import intf_libs += libopencv-imgproc%lib{opencv-imgproc}
+import impl_libs += libopencv-geometry%lib{opencv-geometry}
+import impl_libs += libopencv-flann%lib{opencv-flann}
 
 # Public headers.
 #
@@ -26,6 +43,11 @@ src_pfx_src = [dir_path] $src_root/src/
 cxx.poptions =+ "-I$out_pfx_src" "-I$src_pfx_src" \
                 "-I$out_pfx_inc" "-I$src_pfx_inc"
 
+# OpenCV's own module sources gate their private headers on this macro
+# (upstream's CMake build defines it for every module's own compilation).
+#
+cxx.poptions += -D__OPENCV_BUILD=1
+
 #obja{*}: cxx.poptions += -DOPENCV2_STATIC_BUILD
 #objs{*}: cxx.poptions += -DOPENCV2_SHARED_BUILD
 
@@ -33,7 +55,7 @@ cxx.poptions =+ "-I$out_pfx_src" "-I$src_pfx_src" \
 #
 lib{opencv-stitching}:
 {
-  cxx.export.poptions = "-I$out_pfx_inc" "-I$src_pfx_inc"
+  cxx.export.poptions = "-I$out_pfx_inc" "-I$src_pfx_inc" -DHAVE_OPENCV_STITCHING
   cxx.export.libs = $intf_libs
 }
 
