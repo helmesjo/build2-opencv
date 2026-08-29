@@ -36,3 +36,6 @@ location: libopencv-highgui/
 
 :
 location: libopencv-calib/
+
+:
+location: libopencv-stitching/
