@@ -1,34 +1,27 @@
-#include <sstream>
-#include <stdexcept>
-
-#include <opencv2/opencv-highgui.hpp>
+#include <opencv2/highgui.hpp>
 
 #undef NDEBUG
 #include <cassert>
 
 int main ()
 {
-  using namespace std;
-  using namespace opencv_highgui;
-
-  // Basics.
+  // No GUI toolkit backend (Qt/GTK/Win32/Cocoa/Wayland/framebuffer) is
+  // available in this build - a standard, fully-supported "headless
+  // OpenCV" configuration. Every windowing function still exists in the
+  // public API but throws a well-defined cv::Exception at call time
+  // (upstream's own CV_NO_GUI_ERROR fallback), rather than failing to
+  // link or behaving unpredictably. Verify exactly that.
   //
-  {
-    ostringstream o;
-    say_hello (o, "World");
-    assert (o.str () == "Hello, World!\n");
-  }
-
-  // Empty name.
-  //
+  bool threw = false;
   try
   {
-    ostringstream o;
-    say_hello (o, "");
-    assert (false);
+    cv::namedWindow ("smoke");
   }
-  catch (const invalid_argument& e)
+  catch (const cv::Exception& e)
   {
-    assert (e.what () == string ("empty name"));
+    threw = true;
+    assert (e.code == cv::Error::StsError);
   }
+
+  assert (threw);
 }
