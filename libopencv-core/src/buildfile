@@ -83,7 +83,13 @@ h{cvconfig}: in{cvconfig}
 
 # Private headers and sources as well as dependencies.
 #
+# version_string.inc is spliced into system.cpp via a bare preprocessor
+# #include, so it is otherwise invisible to the build graph (and would be
+# silently dropped by dist, since dist packages what a target depends on,
+# not everything reachable on disk).
+#
 lib{opencv-core}: h{cvconfig} {hxx ixx txx cxx}{**} $impl_libs $intf_libs
+lib{opencv-core}: file{version_string.inc}: include = adhoc
 
 # Build options.
 #
