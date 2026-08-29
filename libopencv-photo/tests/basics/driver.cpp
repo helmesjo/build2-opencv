@@ -1,34 +1,18 @@
-#include <sstream>
-#include <stdexcept>
-
-#include <opencv2/opencv-photo.hpp>
+#include <opencv2/photo.hpp>
 
 #undef NDEBUG
 #include <cassert>
 
 int main ()
 {
-  using namespace std;
-  using namespace opencv_photo;
+  cv::Mat src = cv::Mat::zeros (16, 16, CV_8UC3);
+  cv::Mat mask = cv::Mat::zeros (16, 16, CV_8UC1);
+  mask (cv::Rect (6, 6, 4, 4)).setTo (255);
 
-  // Basics.
-  //
-  {
-    ostringstream o;
-    say_hello (o, "World");
-    assert (o.str () == "Hello, World!\n");
-  }
+  cv::Mat dst;
+  cv::inpaint (src, mask, dst, 3, cv::INPAINT_TELEA);
 
-  // Empty name.
-  //
-  try
-  {
-    ostringstream o;
-    say_hello (o, "");
-    assert (false);
-  }
-  catch (const invalid_argument& e)
-  {
-    assert (e.what () == string ("empty name"));
-  }
+  assert (dst.rows == 16);
+  assert (dst.cols == 16);
+  assert (dst.type () == CV_8UC3);
 }
