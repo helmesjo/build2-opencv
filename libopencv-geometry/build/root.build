@@ -2,9 +2,29 @@
 #
 #cxx.internal.scope = current
 
-cxx.std = latest
+cxx.std = 17
 
 using cxx
+
+# M_PI, M_SQRT2, etc. are hidden behind this define on MSVC/MinGW's
+# <cmath> (glibc and Apple's libc expose them unconditionally, so this is
+# a no-op there), matching upstream's own unconditional
+# cmake/OpenCVModule.cmake (ocv_add_module()).
+#
+cxx.poptions += -D_USE_MATH_DEFINES
+
+# OpenCV fails some tests when char is unsigned by default
+# (upstream cmake/OpenCVCompilerOptions.cmake). AArch64 Linux has
+# unsigned char. MSVC char is already signed.
+#
+if ($cxx.class != 'msvc')
+  cxx.coptions += -fsigned-char
+
+# MSVC ARM64: uint8x16_t and int8x16_t are aliases unless this is
+# defined (cpu_neon.cpp, same cmake file).
+#
+if ($cxx.class == 'msvc' && $cxx.target.cpu == 'aarch64')
+  cxx.poptions += -D_ARM64_DISTINCT_NEON_TYPES
 
 hxx{*}: extension = hpp
 ixx{*}: extension = ipp
