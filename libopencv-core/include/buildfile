@@ -1,4 +1,8 @@
-pub_hdrs = {hxx ixx txx}{**}
+# The generic h{**} wildcard catches any upstream public header using a
+# plain .h extension (unaffected by this project's hxx{*}: extension = hpp
+# override), matching the pattern established in the other opencv packages.
+#
+pub_hdrs = {hxx ixx txx}{**} h{**}
 
 ./: $pub_hdrs
 
@@ -11,7 +15,7 @@ pub_hdrs = {hxx ixx txx}{**}
 # against an installed libopencv-core need those files on the include
 # path, so they are installed with the rest.
 #
-{hxx ixx txx}{*}:
+{hxx ixx txx h}{*}:
 {
   install         = include/
   install.subdirs = true
