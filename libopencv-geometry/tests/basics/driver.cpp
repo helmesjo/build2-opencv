@@ -1,34 +1,14 @@
-#include <sstream>
-#include <stdexcept>
-
-#include <opencv2/opencv-geometry.hpp>
+#include <opencv2/geometry.hpp>
 
 #undef NDEBUG
 #include <cassert>
 
 int main ()
 {
-  using namespace std;
-  using namespace opencv_geometry;
+  std::vector<cv::Point2f> square {
+    {0, 0}, {10, 0}, {10, 10}, {0, 10}
+  };
 
-  // Basics.
-  //
-  {
-    ostringstream o;
-    say_hello (o, "World");
-    assert (o.str () == "Hello, World!\n");
-  }
-
-  // Empty name.
-  //
-  try
-  {
-    ostringstream o;
-    say_hello (o, "");
-    assert (false);
-  }
-  catch (const invalid_argument& e)
-  {
-    assert (e.what () == string ("empty name"));
-  }
+  assert (cv::contourArea (square) == 100.0);
+  assert (cv::isContourConvex (square));
 }
