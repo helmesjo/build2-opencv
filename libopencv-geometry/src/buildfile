@@ -1,6 +1,12 @@
 intf_libs = # Interface dependencies.
 impl_libs = # Implementation dependencies.
-#import xxxx_libs += libhello%lib{hello}
+
+# core is part of geometry's own public interface (2d.hpp, 3d.hpp, and
+# detail/optimizer.hpp all include opencv2/core headers); flann is used
+# only internally (upstream: ocv_define_module(geometry opencv_flann ...)).
+#
+import intf_libs += libopencv-core%lib{opencv-core}
+import impl_libs += libopencv-flann%lib{opencv-flann}
 
 # Public headers.
 #
@@ -11,6 +17,13 @@ include $pub
 pub_hdrs = $($pub/ pub_hdrs)
 
 lib{opencv-geometry}: $pub/{$pub_hdrs}
+
+# A few upstream private headers (ap3p.h, epnp.h, p3p.h, polynom_solver.h,
+# rho.h, pcc.h) use a plain .h extension, so they are invisible to the
+# {hxx ixx txx cxx}{**} wildcard below (this project's hxx{*}: extension =
+# hpp mapping) and would otherwise be silently dropped by dist.
+#
+lib{opencv-geometry}: file{ap3p.h epnp.h p3p.h polynom_solver.h rho.h pcc.h}: include = adhoc
 
 # Private headers and sources as well as dependencies.
 #
@@ -26,6 +39,11 @@ src_pfx_src = [dir_path] $src_root/src/
 cxx.poptions =+ "-I$out_pfx_src" "-I$src_pfx_src" \
                 "-I$out_pfx_inc" "-I$src_pfx_inc"
 
+# OpenCV's own module sources gate their private headers on this macro
+# (upstream's CMake build defines it for every module's own compilation).
+#
+cxx.poptions += -D__OPENCV_BUILD=1
+
 #obja{*}: cxx.poptions += -DOPENCV2_STATIC_BUILD
 #objs{*}: cxx.poptions += -DOPENCV2_SHARED_BUILD
 
@@ -33,7 +51,7 @@ cxx.poptions =+ "-I$out_pfx_src" "-I$src_pfx_src" \
 #
 lib{opencv-geometry}:
 {
-  cxx.export.poptions = "-I$out_pfx_inc" "-I$src_pfx_inc"
+  cxx.export.poptions = "-I$out_pfx_inc" "-I$src_pfx_inc" -DHAVE_OPENCV_GEOMETRY
   cxx.export.libs = $intf_libs
 }
 
