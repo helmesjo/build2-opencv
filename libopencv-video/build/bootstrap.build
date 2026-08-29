@@ -1,0 +1,7 @@
+project = libopencv-video
+
+using version
+using config
+using test
+using install
+using dist
