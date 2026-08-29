@@ -1,6 +1,17 @@
 intf_libs = # Interface dependencies.
 impl_libs = # Implementation dependencies.
-#import xxxx_libs += libhello%lib{hello}
+
+# imgcodecs.hpp includes only opencv2/core.hpp directly, so core is the
+# interface dependency; imgproc is implementation-only. Every external
+# codec backend (libjpeg, libpng, libtiff, libwebp, OpenEXR, OpenJPEG,
+# libspng, GDAL, GDCM, AVIF, JPEG-XL, Jasper) is off for this baseline
+# build: each grfmt_*.cpp file is internally guarded on its own HAVE_*
+# macro and compiles to a stub/registration-skip when absent, leaving
+# built-in support for BMP, PXM/PAM, Sun Raster, Radiance HDR/PFM, GIF,
+# and EXIF metadata (no external library needed for any of those).
+#
+import intf_libs += libopencv-core%lib{opencv-core}
+import impl_libs += libopencv-imgproc%lib{opencv-imgproc}
 
 # Public headers.
 #
@@ -26,6 +37,11 @@ src_pfx_src = [dir_path] $src_root/src/
 cxx.poptions =+ "-I$out_pfx_src" "-I$src_pfx_src" \
                 "-I$out_pfx_inc" "-I$src_pfx_inc"
 
+# OpenCV's own module sources gate their private headers on this macro
+# (upstream's CMake build defines it for every module's own compilation).
+#
+cxx.poptions += -D__OPENCV_BUILD=1
+
 #obja{*}: cxx.poptions += -DOPENCV2_STATIC_BUILD
 #objs{*}: cxx.poptions += -DOPENCV2_SHARED_BUILD
 
@@ -33,7 +49,7 @@ cxx.poptions =+ "-I$out_pfx_src" "-I$src_pfx_src" \
 #
 lib{opencv-imgcodecs}:
 {
-  cxx.export.poptions = "-I$out_pfx_inc" "-I$src_pfx_inc"
+  cxx.export.poptions = "-I$out_pfx_inc" "-I$src_pfx_inc" -DHAVE_OPENCV_IMGCODECS
   cxx.export.libs = $intf_libs
 }
 
