@@ -1,34 +1,16 @@
-#include <sstream>
-#include <stdexcept>
-
-#include <opencv2/opencv-core.hpp>
+#include <opencv2/core.hpp>
 
 #undef NDEBUG
 #include <cassert>
 
 int main ()
 {
-  using namespace std;
-  using namespace opencv_core;
-
-  // Basics.
+  // Basic Mat construction and a dispatched arithmetic function.
   //
-  {
-    ostringstream o;
-    say_hello (o, "World");
-    assert (o.str () == "Hello, World!\n");
-  }
+  cv::Mat m = cv::Mat::ones (3, 3, CV_32F);
+  assert (cv::sum (m)[0] == 9.0);
 
-  // Empty name.
+  // A plain non-inline exported function.
   //
-  try
-  {
-    ostringstream o;
-    say_hello (o, "");
-    assert (false);
-  }
-  catch (const invalid_argument& e)
-  {
-    assert (e.what () == string ("empty name"));
-  }
+  assert (!cv::getBuildInformation ().empty ());
 }
