@@ -1,6 +1,25 @@
 intf_libs = # Interface dependencies.
 impl_libs = # Implementation dependencies.
-#import xxxx_libs += libhello%lib{hello}
+
+# highgui.hpp includes only opencv2/core.hpp directly (its
+# opencv2/imgcodecs.hpp and opencv2/videoio.hpp includes are guarded on
+# HAVE_OPENCV_IMGCODECS/HAVE_OPENCV_VIDEOIO, left undefined here,
+# consistent with every other optional cross-module integration
+# throughout this packaging effort), so core is the only interface
+# dependency; imgproc (a mandatory upstream dependency, used internally by
+# window.cpp/roiSelector.cpp) is implementation-only.
+#
+# No GUI toolkit backend (Qt, GTK, Win32, Cocoa, Wayland, framebuffer) is
+# available for this baseline build - each window_*.cpp file is
+# internally guarded on its own HAVE_* macro and compiles to nothing when
+# absent, and window.cpp itself provides a well-defined, fully-supported
+# fallback (CV_NO_GUI_ERROR) where every windowing function still exists
+# in the public API but throws a clear "not compiled in" exception at
+# call time - this is a standard, commonly deployed "headless OpenCV"
+# configuration, not a degraded one.
+#
+import intf_libs += libopencv-core%lib{opencv-core}
+import impl_libs += libopencv-imgproc%lib{opencv-imgproc}
 
 # Public headers.
 #
@@ -26,6 +45,11 @@ src_pfx_src = [dir_path] $src_root/src/
 cxx.poptions =+ "-I$out_pfx_src" "-I$src_pfx_src" \
                 "-I$out_pfx_inc" "-I$src_pfx_inc"
 
+# OpenCV's own module sources gate their private headers on this macro
+# (upstream's CMake build defines it for every module's own compilation).
+#
+cxx.poptions += -D__OPENCV_BUILD=1
+
 #obja{*}: cxx.poptions += -DOPENCV2_STATIC_BUILD
 #objs{*}: cxx.poptions += -DOPENCV2_SHARED_BUILD
 
@@ -33,7 +57,7 @@ cxx.poptions =+ "-I$out_pfx_src" "-I$src_pfx_src" \
 #
 lib{opencv-highgui}:
 {
-  cxx.export.poptions = "-I$out_pfx_inc" "-I$src_pfx_inc"
+  cxx.export.poptions = "-I$out_pfx_inc" "-I$src_pfx_inc" -DHAVE_OPENCV_HIGHGUI
   cxx.export.libs = $intf_libs
 }
 
