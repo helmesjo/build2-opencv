@@ -1,0 +1,1 @@
+../../upstream/modules/stitching/src/exposure_compensate.cpp
