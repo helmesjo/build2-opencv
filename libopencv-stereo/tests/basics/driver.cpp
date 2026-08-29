@@ -1,34 +1,23 @@
-#include <sstream>
-#include <stdexcept>
-
-#include <opencv2/opencv-stereo.hpp>
+#include <opencv2/stereo.hpp>
 
 #undef NDEBUG
 #include <cassert>
 
 int main ()
 {
-  using namespace std;
-  using namespace opencv_stereo;
-
-  // Basics.
+  // Keep this self-contained (core operations only): stereo depends on
+  // imgproc as an implementation detail, not an interface dependency, so
+  // this test executable does not import libopencv-imgproc.
   //
-  {
-    ostringstream o;
-    say_hello (o, "World");
-    assert (o.str () == "Hello, World!\n");
-  }
+  cv::Mat left = cv::Mat::zeros (64, 64, CV_8UC1);
+  cv::Mat right = cv::Mat::zeros (64, 64, CV_8UC1);
+  left (cv::Rect (10, 10, 20, 20)).setTo (255);
+  right (cv::Rect (14, 10, 20, 20)).setTo (255);
 
-  // Empty name.
-  //
-  try
-  {
-    ostringstream o;
-    say_hello (o, "");
-    assert (false);
-  }
-  catch (const invalid_argument& e)
-  {
-    assert (e.what () == string ("empty name"));
-  }
+  cv::Ptr<cv::StereoBM> m (cv::StereoBM::create (16, 21));
+  cv::Mat disparity;
+  m->compute (left, right, disparity);
+
+  assert (disparity.rows == 64);
+  assert (disparity.cols == 64);
 }
