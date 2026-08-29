@@ -27,3 +27,6 @@ location: libopencv-features/
 
 :
 location: libopencv-objdetect/
+
+:
+location: libopencv-videoio/
