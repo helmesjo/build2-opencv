@@ -1,6 +1,31 @@
 intf_libs = # Interface dependencies.
 impl_libs = # Implementation dependencies.
-#import xxxx_libs += libhello%lib{hello}
+
+# features.hpp includes only opencv2/core.hpp directly, so core is the
+# interface dependency; imgproc and geometry are implementation-only.
+# flann is a genuine (not optional) interface dependency: features.hpp
+# conditionally declares FlannBasedMatcher (using flann::IndexParams and
+# friends from opencv2/flann/miniflann.hpp) under #ifdef HAVE_OPENCV_FLANN,
+# and matchers.cpp's implementation of it is gated the same way. HAVE_
+# OPENCV_FLANN is supplied unconditionally by libopencv-flann's own
+# exported -D compiler option (see that package's src/buildfile), so
+# leaving flann off here would build FlannBasedMatcher's declaration but
+# not its implementation for THIS package - fine on its own, but any
+# downstream consumer that also depends on flann (and so sees the
+# declaration become active for itself) would get an unresolved symbol at
+# link time, as libopencv-stitching's matchers.cpp initially did. DNN-based
+# matchers (HAVE_OPENCV_DNN, ALIKED/LightGlue) remain off - nothing depends
+# on that path yet. The bundled, modified fork of Spotify's Annoy library
+# (3rdparty/annoy, renamed to the cvannoy namespace) and the small MSER
+# threshold lookup table (3rdparty/mscr) are compiled unconditionally by
+# upstream with no HAVE_ guard and have no upstream-compatible published
+# build2 package (same class of exception as libopencv-imgproc's bundled
+# stb_truetype fork) - kept bundled.
+#
+import intf_libs += libopencv-core%lib{opencv-core}
+import intf_libs += libopencv-flann%lib{opencv-flann}
+import impl_libs += libopencv-imgproc%lib{opencv-imgproc}
+import impl_libs += libopencv-geometry%lib{opencv-geometry}
 
 # Public headers.
 #
@@ -14,7 +39,15 @@ lib{opencv-features}: $pub/{$pub_hdrs}
 
 # Private headers and sources as well as dependencies.
 #
+# annoy.cpp and mser.cpp reach ../3rdparty/{annoy,mscr}/*.h via a raw
+# relative #include, so those headers are otherwise invisible to the
+# build graph (and would be silently dropped by dist, same as
+# libopencv-core's version_string.inc).
+#
 lib{opencv-features}: {hxx ixx txx cxx}{**} $impl_libs $intf_libs
+lib{opencv-features}: file{../3rdparty/annoy/annoylib.h}: include = adhoc
+lib{opencv-features}: file{../3rdparty/annoy/mman.h}:     include = adhoc
+lib{opencv-features}: file{../3rdparty/mscr/chi_table.h}: include = adhoc
 
 # Build options.
 #
@@ -26,6 +59,11 @@ src_pfx_src = [dir_path] $src_root/src/
 cxx.poptions =+ "-I$out_pfx_src" "-I$src_pfx_src" \
                 "-I$out_pfx_inc" "-I$src_pfx_inc"
 
+# OpenCV's own module sources gate their private headers on this macro
+# (upstream's CMake build defines it for every module's own compilation).
+#
+cxx.poptions += -D__OPENCV_BUILD=1
+
 #obja{*}: cxx.poptions += -DOPENCV2_STATIC_BUILD
 #objs{*}: cxx.poptions += -DOPENCV2_SHARED_BUILD
 
@@ -33,7 +71,7 @@ cxx.poptions =+ "-I$out_pfx_src" "-I$src_pfx_src" \
 #
 lib{opencv-features}:
 {
-  cxx.export.poptions = "-I$out_pfx_inc" "-I$src_pfx_inc"
+  cxx.export.poptions = "-I$out_pfx_inc" "-I$src_pfx_inc" -DHAVE_OPENCV_FEATURES
   cxx.export.libs = $intf_libs
 }
 

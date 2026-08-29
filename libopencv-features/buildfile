@@ -1,4 +1,9 @@
-./: {*/ -build/} doc{README.md PACKAGE-README.md} legal{LICENSE} manifest
+# 3rdparty/ (bundled annoy and mscr headers, reached only via relative
+# #include from src/, tracked explicitly as adhoc prerequisites there) has
+# no buildfile of its own and is not a subproject - exclude it from the
+# directory wildcard like build/.
+#
+./: {*/ -build/ -3rdparty/} doc{README.md PACKAGE-README.md} legal{LICENSE} manifest
 
 # Don't install tests.
 #
