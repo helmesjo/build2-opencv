@@ -1,6 +1,28 @@
 intf_libs = # Interface dependencies.
 impl_libs = # Implementation dependencies.
-#import xxxx_libs += libhello%lib{hello}
+
+# objdetect.hpp includes opencv2/core.hpp and opencv2/features.hpp
+# directly, and its own opencv2/objdetect/mcc_checker_detector.hpp
+# sub-header unconditionally includes opencv2/imgproc.hpp (no HAVE_ guard,
+# unlike its neighboring opencv2/dnn.hpp include in the same file), so
+# core, features, and imgproc are all interface dependencies; only
+# geometry is implementation-only. Optional DNN-based face
+# detection/recognition and MCC (color checker) support are off for this
+# baseline build, consistent with every other optional feature throughout
+# this packaging effort.
+#
+# calibinit.cpp/chessboard.cpp/chessboard.hpp unconditionally use
+# cv::flann::Index (no HAVE_OPENCV_FLANN guard, unlike features' optional
+# FLANN matcher) - a real dependency the modular CMakeLists.txt does not
+# declare (masked in the monolithic upstream build, where every module's
+# headers are simultaneously available). flann.hpp is only reached from
+# private sources here, so it is implementation-only.
+#
+import intf_libs += libopencv-core%lib{opencv-core}
+import intf_libs += libopencv-features%lib{opencv-features}
+import intf_libs += libopencv-imgproc%lib{opencv-imgproc}
+import impl_libs += libopencv-geometry%lib{opencv-geometry}
+import impl_libs += libopencv-flann%lib{opencv-flann}
 
 # Public headers.
 #
@@ -26,6 +48,11 @@ src_pfx_src = [dir_path] $src_root/src/
 cxx.poptions =+ "-I$out_pfx_src" "-I$src_pfx_src" \
                 "-I$out_pfx_inc" "-I$src_pfx_inc"
 
+# OpenCV's own module sources gate their private headers on this macro
+# (upstream's CMake build defines it for every module's own compilation).
+#
+cxx.poptions += -D__OPENCV_BUILD=1
+
 #obja{*}: cxx.poptions += -DOPENCV2_STATIC_BUILD
 #objs{*}: cxx.poptions += -DOPENCV2_SHARED_BUILD
 
@@ -33,7 +60,7 @@ cxx.poptions =+ "-I$out_pfx_src" "-I$src_pfx_src" \
 #
 lib{opencv-objdetect}:
 {
-  cxx.export.poptions = "-I$out_pfx_inc" "-I$src_pfx_inc"
+  cxx.export.poptions = "-I$out_pfx_inc" "-I$src_pfx_inc" -DHAVE_OPENCV_OBJDETECT
   cxx.export.libs = $intf_libs
 }
 
