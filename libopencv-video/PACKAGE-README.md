@@ -1,7 +1,11 @@
-# libopencv-video - A C++ library
+# libopencv-video - Video analysis
 
-This is a `build2` package for the [`<UPSTREAM-NAME>`](https://<UPSTREAM-URL>)
-C++ library. It provides <SUMMARY-OF-FUNCTIONALITY>.
+This is a `build2` package for the [`video`](https://github.com/opencv/opencv/tree/5.0.0/modules/video)
+module of the [`OpenCV`](https://github.com/opencv/opencv) C++ library. It
+provides video analysis: motion analysis (optical flow, background
+subtraction) and object tracking. The DNN-based trackers (NanoTrack,
+DaSiamRPN, VIT) are not available, since this package does not depend on the
+(not yet packaged) dnn module.
 
 
 ## Usage
@@ -10,13 +14,13 @@ To start using `libopencv-video` in your project, add the following `depends`
 value to your `manifest`, adjusting the version constraint as appropriate:
 
 ```
-depends: libopencv-video ^<VERSION>
+depends: libopencv-video ^5.0.0
 ```
 
 Then import the library in your `buildfile`:
 
 ```
-import libs = libopencv-video%lib{<TARGET>}
+import libs = libopencv-video%lib{opencv-video}
 ```
 
 
@@ -25,18 +29,13 @@ import libs = libopencv-video%lib{<TARGET>}
 This package provides the following importable targets:
 
 ```
-lib{<TARGET>}
+lib{opencv-video}
 ```
 
-<DESCRIPTION-OF-IMPORTABLE-TARGETS>
+`lib{opencv-video}` is the OpenCV video module: optical flow, background
+subtraction, and object tracking.
 
 
 ## Configuration variables
 
-This package provides the following configuration variables:
-
-```
-[bool] config.libopencv_video.<VARIABLE> ?= false
-```
-
-<DESCRIPTION-OF-CONFIG-VARIABLES>
+This package provides no configuration variables.
