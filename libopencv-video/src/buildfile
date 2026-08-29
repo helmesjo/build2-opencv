@@ -1,6 +1,20 @@
 intf_libs = # Interface dependencies.
 impl_libs = # Implementation dependencies.
-#import xxxx_libs += libhello%lib{hello}
+
+# video.hpp -> tracking.hpp includes both opencv2/core.hpp and
+# opencv2/imgproc.hpp directly, so both are interface dependencies.
+# geometry is unconditionally #include'd by precomp.hpp but no symbol from
+# it appears to be referenced anywhere in this module's own source or
+# public headers (verified by grep); kept as implementation-only pending
+# actual build confirmation, matching the empirical approach used
+# throughout this packaging effort. DNN-based trackers (tracker_nano.cpp,
+# tracker_dasiamrpn.cpp, tracker_vit.cpp) are #ifdef HAVE_OPENCV_DNN-
+# guarded and compile to a reduced API surface with dnn off, same as every
+# other optional feature so far.
+#
+import intf_libs += libopencv-core%lib{opencv-core}
+import intf_libs += libopencv-imgproc%lib{opencv-imgproc}
+import impl_libs += libopencv-geometry%lib{opencv-geometry}
 
 # Public headers.
 #
@@ -26,6 +40,11 @@ src_pfx_src = [dir_path] $src_root/src/
 cxx.poptions =+ "-I$out_pfx_src" "-I$src_pfx_src" \
                 "-I$out_pfx_inc" "-I$src_pfx_inc"
 
+# OpenCV's own module sources gate their private headers on this macro
+# (upstream's CMake build defines it for every module's own compilation).
+#
+cxx.poptions += -D__OPENCV_BUILD=1
+
 #obja{*}: cxx.poptions += -DOPENCV2_STATIC_BUILD
 #objs{*}: cxx.poptions += -DOPENCV2_SHARED_BUILD
 
@@ -33,7 +52,7 @@ cxx.poptions =+ "-I$out_pfx_src" "-I$src_pfx_src" \
 #
 lib{opencv-video}:
 {
-  cxx.export.poptions = "-I$out_pfx_inc" "-I$src_pfx_inc"
+  cxx.export.poptions = "-I$out_pfx_inc" "-I$src_pfx_inc" -DHAVE_OPENCV_VIDEO
   cxx.export.libs = $intf_libs
 }
 
