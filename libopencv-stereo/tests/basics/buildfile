@@ -1,0 +1,3 @@
+import libs = libopencv-stereo%lib{opencv-stereo}
+
+exe{driver}: {hxx ixx txx cxx}{**} $libs testscript{**}
