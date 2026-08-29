@@ -1,34 +1,22 @@
-#include <sstream>
-#include <stdexcept>
-
-#include <opencv2/opencv-imgproc.hpp>
+#include <opencv2/imgproc.hpp>
 
 #undef NDEBUG
 #include <cassert>
 
 int main ()
 {
-  using namespace std;
-  using namespace opencv_imgproc;
-
-  // Basics.
+  // Basic image processing function.
   //
-  {
-    ostringstream o;
-    say_hello (o, "World");
-    assert (o.str () == "Hello, World!\n");
-  }
+  cv::Mat bgr (2, 2, CV_8UC3, cv::Scalar (0, 0, 255));
+  cv::Mat gray;
+  cv::cvtColor (bgr, gray, cv::COLOR_BGR2GRAY);
+  assert (gray.at<unsigned char> (0, 0) > 0);
 
-  // Empty name.
+  // putText exercises the (unbundled) stb_truetype font rasterizer and
+  // the zlib-decompressed builtin font blobs end-to-end, not just link.
   //
-  try
-  {
-    ostringstream o;
-    say_hello (o, "");
-    assert (false);
-  }
-  catch (const invalid_argument& e)
-  {
-    assert (e.what () == string ("empty name"));
-  }
+  cv::Mat canvas = cv::Mat::zeros (30, 100, CV_8UC1);
+  cv::putText (canvas, "Hi", cv::Point (5, 20), cv::FONT_HERSHEY_SIMPLEX,
+               1.0, cv::Scalar (255));
+  assert (cv::countNonZero (canvas) > 0);
 }
