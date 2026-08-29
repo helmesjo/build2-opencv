@@ -1,7 +1,9 @@
 # libopencv-calib - A C++ library
 
-This is a `build2` package for the [`<UPSTREAM-NAME>`](https://<UPSTREAM-URL>)
-C++ library. It provides <SUMMARY-OF-FUNCTIONALITY>.
+This is a `build2` package for the [`calib`](https://github.com/opencv/opencv/tree/5.0.0/modules/calib)
+module of the [`OpenCV`](https://github.com/opencv/opencv) C++ library.
+It provides camera calibration and 3D reconstruction: single and stereo
+camera calibration, hand-eye calibration, and the fisheye camera model.
 
 
 ## Usage
@@ -10,13 +12,13 @@ To start using `libopencv-calib` in your project, add the following `depends`
 value to your `manifest`, adjusting the version constraint as appropriate:
 
 ```
-depends: libopencv-calib ^<VERSION>
+depends: libopencv-calib ^5.0.0
 ```
 
 Then import the library in your `buildfile`:
 
 ```
-import libs = libopencv-calib%lib{<TARGET>}
+import libs = libopencv-calib%lib{opencv-calib}
 ```
 
 
@@ -25,18 +27,15 @@ import libs = libopencv-calib%lib{<TARGET>}
 This package provides the following importable targets:
 
 ```
-lib{<TARGET>}
+lib{opencv-calib}
 ```
 
-<DESCRIPTION-OF-IMPORTABLE-TARGETS>
+`lib{opencv-calib}` is the OpenCV calib module: camera calibration, 3D
+reconstruction, hand-eye calibration, and the fisheye camera model. The
+backward-compatible `opencv2/calib3d.hpp` header (which additionally pulls
+in the `stereo` module) is not part of this package.
 
 
 ## Configuration variables
 
-This package provides the following configuration variables:
-
-```
-[bool] config.libopencv_calib.<VARIABLE> ?= false
-```
-
-<DESCRIPTION-OF-CONFIG-VARIABLES>
+This package provides no configuration variables.

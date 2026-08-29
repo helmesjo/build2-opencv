@@ -6,7 +6,8 @@ is split into modules; this repository packages them individually. Packaged
 so far: `libopencv-core`, `libopencv-flann`, `libopencv-geometry`,
 `libopencv-imgproc`, `libopencv-stereo`, `libopencv-ptcloud`,
 `libopencv-photo`, `libopencv-imgcodecs`, `libopencv-features`,
-`libopencv-objdetect`, `libopencv-videoio`, `libopencv-highgui`.
+`libopencv-objdetect`, `libopencv-videoio`, `libopencv-highgui`,
+`libopencv-calib`.
 
 This file contains setup instructions and other details that are more
 appropriate for development rather than consumption. If you want to use one
