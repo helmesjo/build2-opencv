@@ -1,0 +1,3 @@
+import libs = libopencv-photo%lib{opencv-photo}
+
+exe{driver}: {hxx ixx txx cxx}{**} $libs testscript{**}
