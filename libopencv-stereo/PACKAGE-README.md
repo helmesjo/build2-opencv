@@ -1,7 +1,9 @@
 # libopencv-stereo - A C++ library
 
-This is a `build2` package for the [`<UPSTREAM-NAME>`](https://<UPSTREAM-URL>)
-C++ library. It provides <SUMMARY-OF-FUNCTIONALITY>.
+This is a `build2` package for the [`stereo`](https://github.com/opencv/opencv/tree/5.0.0/modules/stereo)
+module of the [`OpenCV`](https://github.com/opencv/opencv) C++ library.
+It provides depth-from-stereo: stereo correspondence (disparity) matching
+between rectified image pairs.
 
 
 ## Usage
@@ -10,13 +12,13 @@ To start using `libopencv-stereo` in your project, add the following `depends`
 value to your `manifest`, adjusting the version constraint as appropriate:
 
 ```
-depends: libopencv-stereo ^<VERSION>
+depends: libopencv-stereo ^5.0.0
 ```
 
 Then import the library in your `buildfile`:
 
 ```
-import libs = libopencv-stereo%lib{<TARGET>}
+import libs = libopencv-stereo%lib{opencv-stereo}
 ```
 
 
@@ -25,18 +27,13 @@ import libs = libopencv-stereo%lib{<TARGET>}
 This package provides the following importable targets:
 
 ```
-lib{<TARGET>}
+lib{opencv-stereo}
 ```
 
-<DESCRIPTION-OF-IMPORTABLE-TARGETS>
+`lib{opencv-stereo}` is the OpenCV stereo module: stereo correspondence
+(disparity) matching algorithms.
 
 
 ## Configuration variables
 
-This package provides the following configuration variables:
-
-```
-[bool] config.libopencv_stereo.<VARIABLE> ?= false
-```
-
-<DESCRIPTION-OF-CONFIG-VARIABLES>
+This package provides no configuration variables.
