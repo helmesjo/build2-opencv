@@ -15,3 +15,6 @@ location: libopencv-stereo/
 
 :
 location: libopencv-ptcloud/
+
+:
+location: libopencv-photo/
