@@ -1,0 +1,5 @@
+src/aruco symlink=dir
+src/barcode_decoder symlink=dir
+src/barcode_detector symlink=dir
+src/mcc symlink=dir
+include/opencv2/objdetect symlink=dir

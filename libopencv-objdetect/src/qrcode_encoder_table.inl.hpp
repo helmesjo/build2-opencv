@@ -1,0 +1,1 @@
+../../upstream/modules/objdetect/src/qrcode_encoder_table.inl.hpp
