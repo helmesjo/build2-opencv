@@ -30,3 +30,6 @@ location: libopencv-objdetect/
 
 :
 location: libopencv-videoio/
+
+:
+location: libopencv-highgui/
