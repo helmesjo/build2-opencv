@@ -33,3 +33,6 @@ location: libopencv-videoio/
 
 :
 location: libopencv-highgui/
+
+:
+location: libopencv-calib/
