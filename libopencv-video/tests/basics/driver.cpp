@@ -1,34 +1,21 @@
-#include <sstream>
-#include <stdexcept>
-
-#include <opencv2/opencv-video.hpp>
+#include <opencv2/video.hpp>
 
 #undef NDEBUG
 #include <cassert>
 
 int main ()
 {
-  using namespace std;
-  using namespace opencv_video;
-
-  // Basics.
+  // A simple probability image and a non-inline exported tracking
+  // function.
   //
-  {
-    ostringstream o;
-    say_hello (o, "World");
-    assert (o.str () == "Hello, World!\n");
-  }
+  cv::Mat prob (cv::Mat::zeros (100, 100, CV_8UC1));
+  prob (cv::Rect (40, 40, 20, 20)).setTo (255);
 
-  // Empty name.
-  //
-  try
-  {
-    ostringstream o;
-    say_hello (o, "");
-    assert (false);
-  }
-  catch (const invalid_argument& e)
-  {
-    assert (e.what () == string ("empty name"));
-  }
+  cv::Rect window (30, 30, 40, 40);
+  int iters (
+    cv::meanShift (
+      prob, window, cv::TermCriteria (cv::TermCriteria::MAX_ITER, 10, 1.0)));
+
+  assert (iters >= 0);
+  assert (window.width == 40 && window.height == 40);
 }
