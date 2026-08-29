@@ -66,3 +66,74 @@ h{cv_cpu_config}: in{cv_cpu_config}
 
 ./: h{cv_cpu_config}
 h{cv_cpu_config}: install = include/
+
+# cvconfig.h is bare-#include'd (no opencv2/ prefix) from
+# opencv2/core/private.hpp, opencv2/core/private.cuda.hpp, and every other
+# OpenCV module's precomp.hpp (which includes private.hpp). It must
+# therefore be generated and installed here too, not internally in src/,
+# so that sibling packages (which import this library and inherit this
+# include/ search path via export.poptions) can resolve it at their own
+# compile time. Every optional upstream feature is off for this baseline
+# build; only HAVE_INTTYPES_H is true (always available on POSIX, per the
+# template's own default).
+#
+h{cvconfig}: in{cvconfig}
+{
+  autoconf.flavor = cmake
+
+  BUILD_SHARED_LIBS               = false
+  CV_ENABLE_INTRINSICS            = false
+  CV_DISABLE_OPTIMIZATION         = false
+  HAVE_CLAMDBLAS                  = false
+  HAVE_CLAMDFFT                   = false
+  HAVE_CLP                        = false
+  HAVE_CUDA                       = false
+  HAVE_CUBLAS                     = false
+  HAVE_CUDNN                      = false
+  HAVE_CUFFT                      = false
+  HAVE_DIRECTX                    = false
+  HAVE_DIRECTX_NV12               = false
+  HAVE_D3D11                      = false
+  HAVE_D3D10                      = false
+  HAVE_D3D9                       = false
+  HAVE_EIGEN                      = false
+  HAVE_GDAL                       = false
+  HAVE_VULKAN                     = false
+  HAVE_INTTYPES_H                 = true
+  HAVE_IPP                        = false
+  HAVE_IPP_ICV                    = false
+  HAVE_IPP_IW                     = false
+  HAVE_IPP_IW_LL                  = false
+  HAVE_OPENJPEG                   = false
+  HAVE_JASPER                     = false
+  HAVE_AVIF                       = false
+  HAVE_JPEG                       = false
+  HAVE_JPEGXL                     = false
+  HAVE_GDCM                       = false
+  HAVE_NVCUVID                    = false
+  HAVE_NVCUVID_HEADER             = false
+  HAVE_DYNLINK_NVCUVID_HEADER     = false
+  HAVE_NVCUVENC                   = false
+  HAVE_OPENCL                     = false
+  HAVE_OPENCL_STATIC              = false
+  HAVE_OPENCL_SVM                 = false
+  HAVE_OPENCL_D3D11_NV            = false
+  HAVE_OPENEXR                    = false
+  HAVE_OPENGL                     = false
+  HAVE_PNG                        = false
+  HAVE_SPNG                       = false
+  HAVE_PTHREAD                    = false
+  HAVE_PTHREADS_PF                = false
+  HAVE_TBB                        = false
+  HAVE_HPX                        = false
+  HAVE_TIFF                       = false
+  HAVE_VA                         = false
+  HAVE_VA_INTEL                   = false
+  HAVE_LAPACK                     = false
+  ENABLE_INSTRUMENTATION          = false
+  OPENCV_TRACE                    = false
+  HAVE_UNIFONT                    = false
+}
+
+./: h{cvconfig}
+h{cvconfig}: install = include/
