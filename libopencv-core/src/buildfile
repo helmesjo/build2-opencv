@@ -1,6 +1,6 @@
 intf_libs = # Interface dependencies.
 impl_libs = # Implementation dependencies.
-#import xxxx_libs += libhello%lib{hello}
+import impl_libs += libz%lib{z}
 
 # Public headers.
 #
@@ -12,9 +12,78 @@ pub_hdrs = $($pub/ pub_hdrs)
 
 lib{opencv-core}: $pub/{$pub_hdrs}
 
+# Generated internal cvconfig.h (bare #include'd from precomp.hpp and the
+# private.hpp/private.cuda.hpp headers shared with other OpenCV modules).
+# Not part of the public API surface of this package, so it is generated
+# into src/ and not installed. Every optional upstream feature is off for
+# this baseline build; only HAVE_INTTYPES_H is true (always available on
+# POSIX, per the template's own default).
+#
+using autoconf
+
+h{cvconfig}: in{cvconfig}
+{
+  autoconf.flavor = cmake
+
+  BUILD_SHARED_LIBS               = false
+  CV_ENABLE_INTRINSICS            = false
+  CV_DISABLE_OPTIMIZATION         = false
+  HAVE_CLAMDBLAS                  = false
+  HAVE_CLAMDFFT                   = false
+  HAVE_CLP                        = false
+  HAVE_CUDA                       = false
+  HAVE_CUBLAS                     = false
+  HAVE_CUDNN                      = false
+  HAVE_CUFFT                      = false
+  HAVE_DIRECTX                    = false
+  HAVE_DIRECTX_NV12               = false
+  HAVE_D3D11                      = false
+  HAVE_D3D10                      = false
+  HAVE_D3D9                       = false
+  HAVE_EIGEN                      = false
+  HAVE_GDAL                       = false
+  HAVE_VULKAN                     = false
+  HAVE_INTTYPES_H                 = true
+  HAVE_IPP                        = false
+  HAVE_IPP_ICV                    = false
+  HAVE_IPP_IW                     = false
+  HAVE_IPP_IW_LL                  = false
+  HAVE_OPENJPEG                   = false
+  HAVE_JASPER                     = false
+  HAVE_AVIF                       = false
+  HAVE_JPEG                       = false
+  HAVE_JPEGXL                     = false
+  HAVE_GDCM                       = false
+  HAVE_NVCUVID                    = false
+  HAVE_NVCUVID_HEADER             = false
+  HAVE_DYNLINK_NVCUVID_HEADER     = false
+  HAVE_NVCUVENC                   = false
+  HAVE_OPENCL                     = false
+  HAVE_OPENCL_STATIC              = false
+  HAVE_OPENCL_SVM                 = false
+  HAVE_OPENCL_D3D11_NV            = false
+  HAVE_OPENEXR                    = false
+  HAVE_OPENGL                     = false
+  HAVE_PNG                        = false
+  HAVE_SPNG                       = false
+  HAVE_PTHREAD                    = false
+  HAVE_PTHREADS_PF                = false
+  HAVE_TBB                        = false
+  HAVE_HPX                        = false
+  HAVE_TIFF                       = false
+  HAVE_VA                         = false
+  HAVE_VA_INTEL                   = false
+  HAVE_LAPACK                     = false
+  ENABLE_INSTRUMENTATION          = false
+  OPENCV_TRACE                    = false
+  HAVE_UNIFONT                    = false
+
+  install = false
+}
+
 # Private headers and sources as well as dependencies.
 #
-lib{opencv-core}: {hxx ixx txx cxx}{**} $impl_libs $intf_libs
+lib{opencv-core}: h{cvconfig} {hxx ixx txx cxx}{**} $impl_libs $intf_libs
 
 # Build options.
 #
@@ -26,6 +95,11 @@ src_pfx_src = [dir_path] $src_root/src/
 cxx.poptions =+ "-I$out_pfx_src" "-I$src_pfx_src" \
                 "-I$out_pfx_inc" "-I$src_pfx_inc"
 
+# OpenCV's own module sources gate their private headers on this macro
+# (upstream's CMake build defines it for every module's own compilation).
+#
+cxx.poptions += -D__OPENCV_BUILD=1
+
 #obja{*}: cxx.poptions += -DOPENCV2_STATIC_BUILD
 #objs{*}: cxx.poptions += -DOPENCV2_SHARED_BUILD
 
@@ -33,7 +107,7 @@ cxx.poptions =+ "-I$out_pfx_src" "-I$src_pfx_src" \
 #
 lib{opencv-core}:
 {
-  cxx.export.poptions = "-I$out_pfx_inc" "-I$src_pfx_inc"
+  cxx.export.poptions = "-I$out_pfx_inc" "-I$src_pfx_inc" -DHAVE_OPENCV_CORE
   cxx.export.libs = $intf_libs
 }
 

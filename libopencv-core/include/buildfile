@@ -9,3 +9,47 @@ pub_hdrs = {hxx ixx txx}{**}
   install         = include/
   install.subdirs = true
 }
+
+# Upstream's own private/internal headers (module-to-module use only, not
+# part of the public API -- see HOWTO/third-party-private-headers.md).
+# Sibling packages still resolve them via the exported include/ search path
+# above (independent of install), only the installed copy is excluded.
+#
+opencv2/core/
+{
+  hxx{private}@./:      install = false
+  hxx{private.cuda...}@./: install = false
+}
+
+opencv2/core/private/
+{
+  hxx{cuda_stubs}@./:   install = false
+  hxx{cv_cpu_include_simd_declarations}@./: install = false
+}
+
+opencv2/core/utils/
+{
+  hxx{buffer_area.private...}@./:   install = false
+  hxx{configuration.private...}@./: install = false
+  hxx{filesystem.private...}@./:    install = false
+  hxx{fp_control.private...}@./:    install = false
+  hxx{lock.private...}@./:          install = false
+  hxx{plugin_loader.private...}@./: install = false
+  hxx{trace.private...}@./:         install = false
+}
+
+# cv_cpu_config.h is bare-#include'd (no opencv2/ prefix) from the public
+# opencv2/core/cv_cpu_dispatch.h, so it must be generated and installed at
+# the include/ root, not under opencv2/. This build has no CPU baseline or
+# dispatched optimizations configured, so both substitutions are empty.
+#
+using autoconf
+
+h{cv_cpu_config}: in{cv_cpu_config}
+{
+  OPENCV_CPU_BASELINE_DEFINITIONS_CONFIGMAKE = '#define CV_CPU_BASELINE_FEATURES 0'
+  OPENCV_CPU_DISPATCH_DEFINITIONS_CONFIGMAKE = '#define CV_CPU_DISPATCH_FEATURES 0'
+}
+
+./: h{cv_cpu_config}
+h{cv_cpu_config}: install = include/
