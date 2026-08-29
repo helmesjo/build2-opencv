@@ -1,0 +1,3 @@
+src/parallel symlink=dir
+src/utils symlink=dir
+include/opencv2/core symlink=dir

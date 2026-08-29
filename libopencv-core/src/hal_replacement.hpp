@@ -1,0 +1,1 @@
+../../upstream/modules/core/src/hal_replacement.hpp
