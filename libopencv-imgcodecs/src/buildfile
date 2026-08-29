@@ -42,6 +42,20 @@ cxx.poptions =+ "-I$out_pfx_src" "-I$src_pfx_src" \
 #
 cxx.poptions += -D__OPENCV_BUILD=1
 
+# BMP and EXIF-metadata support are unconditionally registered by
+# loadsave.cpp with no macro guard at all, but GIF/HDR/Sun-Raster/PXM/PFM
+# are gated behind their own HAVE_IMGCODEC_* macros - a separate mechanism
+# from the HAVE_JPEG/HAVE_PNG-style flags cvconfig.h controls. Upstream's
+# cmake/OpenCVFindLibsGrfmt.cmake sets all five ON by default (mirroring
+# WITH_IMGCODEC_* options that default ON, no external library involved),
+# so define them here to match; without this, only BMP actually registers
+# as a writer/decoder despite this file's own comment above claiming
+# PXM/Sun-Raster/HDR-PFM/GIF also work out of the box.
+#
+cxx.poptions += -DHAVE_IMGCODEC_GIF -DHAVE_IMGCODEC_HDR \
+                -DHAVE_IMGCODEC_SUNRASTER -DHAVE_IMGCODEC_PXM \
+                -DHAVE_IMGCODEC_PFM
+
 #obja{*}: cxx.poptions += -DOPENCV2_STATIC_BUILD
 #objs{*}: cxx.poptions += -DOPENCV2_SHARED_BUILD
 
