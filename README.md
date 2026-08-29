@@ -7,7 +7,7 @@ so far: `libopencv-core`, `libopencv-flann`, `libopencv-geometry`,
 `libopencv-imgproc`, `libopencv-stereo`, `libopencv-ptcloud`,
 `libopencv-photo`, `libopencv-imgcodecs`, `libopencv-features`,
 `libopencv-objdetect`, `libopencv-videoio`, `libopencv-highgui`,
-`libopencv-calib`, `libopencv-stitching`.
+`libopencv-calib`, `libopencv-stitching`, `libopencv-video`.
 
 This file contains setup instructions and other details that are more
 appropriate for development rather than consumption. If you want to use one
