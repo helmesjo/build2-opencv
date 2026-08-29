@@ -1,0 +1,2 @@
+src/cap_obsensor symlink=dir
+include/opencv2/videoio symlink=dir

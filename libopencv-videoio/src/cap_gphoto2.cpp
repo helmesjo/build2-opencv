@@ -1,0 +1,1 @@
+../../upstream/modules/videoio/src/cap_gphoto2.cpp
