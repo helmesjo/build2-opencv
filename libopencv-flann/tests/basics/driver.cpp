@@ -1,34 +1,19 @@
-#include <sstream>
-#include <stdexcept>
-
-#include <opencv2/opencv-flann.hpp>
+#include <opencv2/flann.hpp>
 
 #undef NDEBUG
 #include <cassert>
 
 int main ()
 {
-  using namespace std;
-  using namespace opencv_flann;
+  float data[][2] = {{0, 0}, {10, 10}, {20, 20}};
+  cv::Mat features (3, 2, CV_32F, data);
 
-  // Basics.
-  //
-  {
-    ostringstream o;
-    say_hello (o, "World");
-    assert (o.str () == "Hello, World!\n");
-  }
+  cv::flann::Index index (features, cv::flann::LinearIndexParams ());
 
-  // Empty name.
-  //
-  try
-  {
-    ostringstream o;
-    say_hello (o, "");
-    assert (false);
-  }
-  catch (const invalid_argument& e)
-  {
-    assert (e.what () == string ("empty name"));
-  }
+  float query_data[] = {9, 9};
+  cv::Mat query (1, 2, CV_32F, query_data);
+  cv::Mat indices, dists;
+  index.knnSearch (query, indices, dists, 1);
+
+  assert (indices.at<int> (0) == 1);
 }
