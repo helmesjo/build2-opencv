@@ -4,7 +4,8 @@ This is a `build2` package repository for [`OpenCV`](https://github.com/opencv/o
 the open source computer vision and machine learning software library. OpenCV
 is split into modules; this repository packages them individually. Packaged
 so far: `libopencv-core`, `libopencv-flann`, `libopencv-geometry`,
-`libopencv-imgproc`.
+`libopencv-imgproc`, `libopencv-stereo`, `libopencv-ptcloud`,
+`libopencv-photo`, `libopencv-imgcodecs`.
 
 This file contains setup instructions and other details that are more
 appropriate for development rather than consumption. If you want to use one
