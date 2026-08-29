@@ -1,0 +1,3 @@
+import libs = libopencv-ptcloud%lib{opencv-ptcloud}
+
+exe{driver}: {hxx ixx txx cxx}{**} $libs testscript{**}

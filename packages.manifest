@@ -12,3 +12,6 @@ location: libopencv-imgproc/
 
 :
 location: libopencv-stereo/
+
+:
+location: libopencv-ptcloud/
