@@ -1,6 +1,22 @@
 intf_libs = # Interface dependencies.
 impl_libs = # Implementation dependencies.
-#import xxxx_libs += libhello%lib{hello}
+
+# core is used throughout imgproc's own public headers; geometry and
+# libz (drawing_text.cpp decompresses the gzipped builtin font blobs)
+# are implementation-only.
+#
+# stb_truetype is bundled (not unbundled as a dependency): OpenCV's copy
+# is a modified fork with OpenType variable-font support (stbtt_CreateFont,
+# stbtt_SetInstance, weight axes, etc.) not present in the vanilla upstream
+# library the published stb_truetype build2 package wraps -- confirmed by
+# a failed build against it (undeclared stbtt_CreateFont/STBTT_FOURCC/
+# stbtt_SetInstance/STBTT_MAX_AXES/stbtt_GetWeight/etc.). Unbundling would
+# require either OpenCV's fork to be packaged separately under a different
+# name, or the upstream stb_truetype package to gain these extensions.
+#
+import intf_libs += libopencv-core%lib{opencv-core}
+import impl_libs += libopencv-geometry%lib{opencv-geometry}
+import impl_libs += libz%lib{z}
 
 # Public headers.
 #
@@ -26,6 +42,11 @@ src_pfx_src = [dir_path] $src_root/src/
 cxx.poptions =+ "-I$out_pfx_src" "-I$src_pfx_src" \
                 "-I$out_pfx_inc" "-I$src_pfx_inc"
 
+# OpenCV's own module sources gate their private headers on this macro
+# (upstream's CMake build defines it for every module's own compilation).
+#
+cxx.poptions += -D__OPENCV_BUILD=1
+
 #obja{*}: cxx.poptions += -DOPENCV2_STATIC_BUILD
 #objs{*}: cxx.poptions += -DOPENCV2_SHARED_BUILD
 
@@ -33,7 +54,7 @@ cxx.poptions =+ "-I$out_pfx_src" "-I$src_pfx_src" \
 #
 lib{opencv-imgproc}:
 {
-  cxx.export.poptions = "-I$out_pfx_inc" "-I$src_pfx_inc"
+  cxx.export.poptions = "-I$out_pfx_inc" "-I$src_pfx_inc" -DHAVE_OPENCV_IMGPROC
   cxx.export.libs = $intf_libs
 }
 

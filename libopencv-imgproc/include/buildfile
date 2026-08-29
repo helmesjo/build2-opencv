@@ -1,10 +1,15 @@
-pub_hdrs = {hxx ixx txx}{**}
+# opencv2/imgproc/hal/interface.h uses a plain .h extension rather than
+# .hpp, hence the extra h{**} wildcard (the generic "h" target type
+# defaults to the .h extension, unaffected by this project's hxx{*}:
+# extension = hpp override).
+#
+pub_hdrs = {hxx ixx txx}{**} h{**}
 
 ./: $pub_hdrs
 
 # Install recreating subdirectories.
 #
-{hxx ixx txx}{*}:
+{hxx ixx txx h}{*}:
 {
   install         = include/
   install.subdirs = true
