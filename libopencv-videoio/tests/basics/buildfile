@@ -1,0 +1,3 @@
+import libs = libopencv-videoio%lib{opencv-videoio}
+
+exe{driver}: {hxx ixx txx cxx}{**} $libs testscript{**}
