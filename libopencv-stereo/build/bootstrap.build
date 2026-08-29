@@ -1,0 +1,7 @@
+project = libopencv-stereo
+
+using version
+using config
+using test
+using install
+using dist

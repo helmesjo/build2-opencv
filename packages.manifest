@@ -9,3 +9,6 @@ location: libopencv-geometry/
 
 :
 location: libopencv-imgproc/
+
+:
+location: libopencv-stereo/
