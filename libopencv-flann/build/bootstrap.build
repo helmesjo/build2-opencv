@@ -1,0 +1,7 @@
+project = libopencv-flann
+
+using version
+using config
+using test
+using install
+using dist
