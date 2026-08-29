@@ -1,34 +1,12 @@
-#include <sstream>
-#include <stdexcept>
-
-#include <opencv2/opencv-stitching.hpp>
+#include <opencv2/stitching.hpp>
 
 #undef NDEBUG
 #include <cassert>
 
 int main ()
 {
-  using namespace std;
-  using namespace opencv_stitching;
-
-  // Basics.
+  // Construct a Stitcher via its non-inline exported factory function.
   //
-  {
-    ostringstream o;
-    say_hello (o, "World");
-    assert (o.str () == "Hello, World!\n");
-  }
-
-  // Empty name.
-  //
-  try
-  {
-    ostringstream o;
-    say_hello (o, "");
-    assert (false);
-  }
-  catch (const invalid_argument& e)
-  {
-    assert (e.what () == string ("empty name"));
-  }
+  cv::Ptr<cv::Stitcher> stitcher (cv::Stitcher::create (cv::Stitcher::PANORAMA));
+  assert (stitcher != nullptr);
 }
