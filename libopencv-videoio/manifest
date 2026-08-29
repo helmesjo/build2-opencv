@@ -1,15 +1,20 @@
 : 1
 name: libopencv-videoio
-version: 0.1.0-a.0.z
+version: 5.0.0-a.0.z
 language: c++
-project: build2-opencv
-summary: opencv-videoio C++ library
-license: other: proprietary ; Not free/open source.
+project: opencv
+summary: Video I/O C++ library from OpenCV
+license: Apache-2.0
+topics: C++, computer vision, image processing
 description-file: README.md
 package-description-file: PACKAGE-README.md
-url: https://example.org/upstream
-email: upstream@example.org
-package-url: https://github.com/build2-packaging/build2-opencv
-package-email: packaging@build2.org ; Mailing list.
+url: https://opencv.org/
+doc-url: https://docs.opencv.org/5.x/
+src-url: https://github.com/opencv/opencv/
+package-url: https://github.com/build2-packaging/opencv/
+package-email: helmesjo@gmail.com
 depends: * build2 >= 0.18.0
 depends: * bpkg >= 0.18.0
+depends: libopencv-core == $
+depends: libopencv-imgproc == $
+depends: libopencv-imgcodecs == $
