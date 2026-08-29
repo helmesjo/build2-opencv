@@ -1,6 +1,20 @@
 intf_libs = # Interface dependencies.
 impl_libs = # Implementation dependencies.
-#import xxxx_libs += libhello%lib{hello}
+
+# calib.hpp includes only opencv2/core.hpp directly, so core is the
+# interface dependency; geometry, imgproc, and features are
+# implementation-only (pulled in by precomp.hpp for the calibration
+# algorithms, not exposed in the public API). Verified against actual
+# source usage, not just the upstream CMakeLists.txt dependency line,
+# which also lists objdetect, flann, and stereo - none of which are
+# referenced anywhere in this module's own source. The backward-
+# compatibility opencv2/calib3d.hpp shim (which does pull in stereo) is
+# deliberately not part of this package - see include/buildfile.
+#
+import intf_libs += libopencv-core%lib{opencv-core}
+import impl_libs += libopencv-geometry%lib{opencv-geometry}
+import impl_libs += libopencv-imgproc%lib{opencv-imgproc}
+import impl_libs += libopencv-features%lib{opencv-features}
 
 # Public headers.
 #
@@ -26,6 +40,11 @@ src_pfx_src = [dir_path] $src_root/src/
 cxx.poptions =+ "-I$out_pfx_src" "-I$src_pfx_src" \
                 "-I$out_pfx_inc" "-I$src_pfx_inc"
 
+# OpenCV's own module sources gate their private headers on this macro
+# (upstream's CMake build defines it for every module's own compilation).
+#
+cxx.poptions += -D__OPENCV_BUILD=1
+
 #obja{*}: cxx.poptions += -DOPENCV2_STATIC_BUILD
 #objs{*}: cxx.poptions += -DOPENCV2_SHARED_BUILD
 
@@ -33,7 +52,7 @@ cxx.poptions =+ "-I$out_pfx_src" "-I$src_pfx_src" \
 #
 lib{opencv-calib}:
 {
-  cxx.export.poptions = "-I$out_pfx_inc" "-I$src_pfx_inc"
+  cxx.export.poptions = "-I$out_pfx_inc" "-I$src_pfx_inc" -DHAVE_OPENCV_CALIB
   cxx.export.libs = $intf_libs
 }
 
