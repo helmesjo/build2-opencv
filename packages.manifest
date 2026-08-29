@@ -3,3 +3,6 @@ location: libopencv-core/
 
 :
 location: libopencv-flann/
+
+:
+location: libopencv-geometry/
