@@ -1,0 +1,1 @@
+../../upstream/modules/videoio/src/plugin_capture_api.hpp

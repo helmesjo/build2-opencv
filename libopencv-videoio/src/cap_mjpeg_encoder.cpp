@@ -1,0 +1,1 @@
+../../upstream/modules/videoio/src/cap_mjpeg_encoder.cpp

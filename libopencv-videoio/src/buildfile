@@ -1,6 +1,20 @@
 intf_libs = # Interface dependencies.
 impl_libs = # Implementation dependencies.
-#import xxxx_libs += libhello%lib{hello}
+
+# videoio.hpp includes only opencv2/core.hpp directly, so core is the
+# interface dependency; imgproc and imgcodecs are implementation-only
+# (used by the built-in image-sequence/MJPEG-AVI capture and by a handful
+# of backend files). Every external capture/encode backend (V4L, FFmpeg,
+# GStreamer, DirectShow, Media Foundation, AVFoundation, Aravis, XIMEA,
+# etc.) is off for this baseline build, same as every other optional
+# feature throughout this packaging effort; each backend file is
+# internally guarded on its own HAVE_* macro (and, for the
+# Windows/Objective-C-only backends already excluded entirely below, a
+# platform macro too) and compiles to a stub when absent.
+#
+import intf_libs += libopencv-core%lib{opencv-core}
+import impl_libs += libopencv-imgproc%lib{opencv-imgproc}
+import impl_libs += libopencv-imgcodecs%lib{opencv-imgcodecs}
 
 # Public headers.
 #
@@ -26,6 +40,11 @@ src_pfx_src = [dir_path] $src_root/src/
 cxx.poptions =+ "-I$out_pfx_src" "-I$src_pfx_src" \
                 "-I$out_pfx_inc" "-I$src_pfx_inc"
 
+# OpenCV's own module sources gate their private headers on this macro
+# (upstream's CMake build defines it for every module's own compilation).
+#
+cxx.poptions += -D__OPENCV_BUILD=1
+
 #obja{*}: cxx.poptions += -DOPENCV2_STATIC_BUILD
 #objs{*}: cxx.poptions += -DOPENCV2_SHARED_BUILD
 
@@ -33,7 +52,7 @@ cxx.poptions =+ "-I$out_pfx_src" "-I$src_pfx_src" \
 #
 lib{opencv-videoio}:
 {
-  cxx.export.poptions = "-I$out_pfx_inc" "-I$src_pfx_inc"
+  cxx.export.poptions = "-I$out_pfx_inc" "-I$src_pfx_inc" -DHAVE_OPENCV_VIDEOIO
   cxx.export.libs = $intf_libs
 }
 
