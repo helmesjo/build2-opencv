@@ -1,0 +1,1 @@
+../../upstream/modules/photo/src/npr.hpp

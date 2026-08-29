@@ -1,0 +1,1 @@
+../../upstream/modules/photo/src/contrast_preserve.hpp

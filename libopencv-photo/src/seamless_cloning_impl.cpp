@@ -1,0 +1,1 @@
+../../upstream/modules/photo/src/seamless_cloning_impl.cpp
