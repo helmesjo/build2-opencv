@@ -1,6 +1,13 @@
 intf_libs = # Interface dependencies.
 impl_libs = # Implementation dependencies.
-#import xxxx_libs += libhello%lib{hello}
+
+# ptcloud.hpp and its detail/ headers include opencv2/core.hpp and
+# opencv2/geometry/*.hpp directly, so both are interface dependencies;
+# imgproc is implementation-only.
+#
+import intf_libs += libopencv-core%lib{opencv-core}
+import intf_libs += libopencv-geometry%lib{opencv-geometry}
+import impl_libs += libopencv-imgproc%lib{opencv-imgproc}
 
 # Public headers.
 #
@@ -26,6 +33,11 @@ src_pfx_src = [dir_path] $src_root/src/
 cxx.poptions =+ "-I$out_pfx_src" "-I$src_pfx_src" \
                 "-I$out_pfx_inc" "-I$src_pfx_inc"
 
+# OpenCV's own module sources gate their private headers on this macro
+# (upstream's CMake build defines it for every module's own compilation).
+#
+cxx.poptions += -D__OPENCV_BUILD=1
+
 #obja{*}: cxx.poptions += -DOPENCV2_STATIC_BUILD
 #objs{*}: cxx.poptions += -DOPENCV2_SHARED_BUILD
 
@@ -33,7 +45,7 @@ cxx.poptions =+ "-I$out_pfx_src" "-I$src_pfx_src" \
 #
 lib{opencv-ptcloud}:
 {
-  cxx.export.poptions = "-I$out_pfx_inc" "-I$src_pfx_inc"
+  cxx.export.poptions = "-I$out_pfx_inc" "-I$src_pfx_inc" -DHAVE_OPENCV_PTCLOUD
   cxx.export.libs = $intf_libs
 }
 
