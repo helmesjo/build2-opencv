@@ -6,3 +6,6 @@ location: libopencv-flann/
 
 :
 location: libopencv-geometry/
+
+:
+location: libopencv-imgproc/
