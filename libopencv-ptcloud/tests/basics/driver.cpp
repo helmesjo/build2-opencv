@@ -1,34 +1,15 @@
-#include <sstream>
-#include <stdexcept>
-
-#include <opencv2/opencv-ptcloud.hpp>
+#include <opencv2/ptcloud.hpp>
 
 #undef NDEBUG
 #include <cassert>
 
 int main ()
 {
-  using namespace std;
-  using namespace opencv_ptcloud;
+  cv::Ptr<cv::Octree> o (
+    cv::Octree::createWithDepth (4, 2.0, cv::Point3f (0, 0, 0)));
 
-  // Basics.
-  //
-  {
-    ostringstream o;
-    say_hello (o, "World");
-    assert (o.str () == "Hello, World!\n");
-  }
-
-  // Empty name.
-  //
-  try
-  {
-    ostringstream o;
-    say_hello (o, "");
-    assert (false);
-  }
-  catch (const invalid_argument& e)
-  {
-    assert (e.what () == string ("empty name"));
-  }
+  assert (o->empty ());
+  assert (o->insertPoint (cv::Point3f (0.1f, 0.1f, 0.1f)));
+  assert (!o->empty ());
+  assert (o->isPointInBound (cv::Point3f (0.1f, 0.1f, 0.1f)));
 }
