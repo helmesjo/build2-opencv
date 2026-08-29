@@ -28,6 +28,13 @@ pub_hdrs = $($pub/ pub_hdrs)
 
 lib{opencv-imgproc}: $pub/{$pub_hdrs}
 
+# builtin_font_sans.h and builtin_font_italic.h use a plain .h extension,
+# so (like ap3p.h et al. in libopencv-geometry) they are invisible to the
+# {hxx ixx txx cxx}{**} wildcard below and would otherwise be silently
+# dropped by dist.
+#
+lib{opencv-imgproc}: file{builtin_font_sans.h builtin_font_italic.h}: include = adhoc
+
 # Private headers and sources as well as dependencies.
 #
 lib{opencv-imgproc}: {hxx ixx txx cxx}{**} $impl_libs $intf_libs
