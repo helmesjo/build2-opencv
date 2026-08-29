@@ -1,0 +1,1 @@
+../../upstream/modules/video/src/hal_replacement.hpp

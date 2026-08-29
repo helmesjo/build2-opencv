@@ -1,0 +1,2 @@
+src/tracking symlink=dir
+include/opencv2/video symlink=dir
