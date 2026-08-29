@@ -24,3 +24,6 @@ location: libopencv-imgcodecs/
 
 :
 location: libopencv-features/
+
+:
+location: libopencv-objdetect/
