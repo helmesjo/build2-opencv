@@ -1,34 +1,23 @@
-#include <sstream>
-#include <stdexcept>
-
-#include <opencv2/opencv-features.hpp>
+#include <opencv2/features.hpp>
+#include <opencv2/imgproc.hpp>
 
 #undef NDEBUG
 #include <cassert>
 
 int main ()
 {
-  using namespace std;
-  using namespace opencv_features;
-
-  // Basics.
+  // A synthetic checkerboard image (rich in corners), detected with ORB
+  // (a plain non-inline exported class).
   //
-  {
-    ostringstream o;
-    say_hello (o, "World");
-    assert (o.str () == "Hello, World!\n");
-  }
+  cv::Mat m = cv::Mat::zeros (256, 256, CV_8UC1);
+  for (int y = 0; y < 16; ++y)
+    for (int x = 0; x < 16; ++x)
+      if ((x + y) % 2 == 0)
+        cv::rectangle (m, cv::Rect (x * 16, y * 16, 16, 16), cv::Scalar (255), -1);
 
-  // Empty name.
-  //
-  try
-  {
-    ostringstream o;
-    say_hello (o, "");
-    assert (false);
-  }
-  catch (const invalid_argument& e)
-  {
-    assert (e.what () == string ("empty name"));
-  }
+  cv::Ptr<cv::ORB> orb = cv::ORB::create ();
+  std::vector<cv::KeyPoint> kps;
+  orb->detect (m, kps);
+
+  assert (!kps.empty ());
 }
