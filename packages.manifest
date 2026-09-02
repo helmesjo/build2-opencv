@@ -57,3 +57,6 @@ location: libopencv-highgui-tests/
 
 :
 location: libopencv-imgcodecs-tests/
+
+:
+location: libopencv-stitching-tests/
