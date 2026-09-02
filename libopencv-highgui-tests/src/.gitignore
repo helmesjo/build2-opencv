@@ -1,0 +1,5 @@
+libopencv-highgui-tests
+
+# Testscript output directory (can be symlink).
+#
+test-libopencv-highgui-tests

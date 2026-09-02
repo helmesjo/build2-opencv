@@ -1,0 +1,17 @@
+libs =
+
+import libs += libopencv-highgui%lib{opencv-highgui}
+import libs += libopencv-ts%lib{opencv-ts}
+
+exe{libopencv-highgui-tests}: {hxx ixx txx cxx}{**} $libs
+{
+  test = true
+  test.arguments = --gtest_brief=1
+}
+
+cxx.poptions =+ "-I$out_root" "-I$src_root"
+
+# OpenCV's own module sources gate their private headers on this macro
+# (upstream's CMake build defines it for every module's own compilation).
+#
+cxx.poptions += -D__OPENCV_BUILD=1
