@@ -1,0 +1,5 @@
+libopencv-imgcodecs-tests
+
+# Testscript output directory (can be symlink).
+#
+test-libopencv-imgcodecs-tests
