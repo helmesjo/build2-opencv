@@ -20,3 +20,6 @@ depends: libopencv-geometry == $
 depends: libopencv-imgproc == $
 depends: libopencv-features == $
 depends: libopencv-flann == $
+tests: libopencv-stitching-tests == $
+build-exclude: *-msvc_14** ; Requires cxx.predefs.
+build-exclude: *-gcc_4** ; Requires C++17.
