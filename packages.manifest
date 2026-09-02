@@ -45,3 +45,6 @@ location: libopencv-video/
 
 :
 location: libopencv-ts/
+
+:
+location: libopencv-ptcloud-tests/
