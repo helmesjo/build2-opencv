@@ -16,3 +16,4 @@ package-email: helmesjo@gmail.com
 depends: * build2 >= 0.18.0
 depends: * bpkg >= 0.18.0
 depends: libopencv-core == $
+tests: libopencv-flann-tests == $
