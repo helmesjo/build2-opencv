@@ -1,34 +1,17 @@
-#include <sstream>
-#include <stdexcept>
-
-#include <opencv2/opencv-ts.hpp>
+#include <opencv2/ts.hpp>
 
 #undef NDEBUG
 #include <cassert>
 
-int main ()
+int main (int argc, char** argv)
 {
-  using namespace std;
-  using namespace opencv_ts;
-
-  // Basics.
+  // A non-inline exported singleton accessor, proving the library links,
+  // plus a minimal gtest run (zero registered tests) proving the swapped-in
+  // external gtest dependency is wired correctly.
   //
-  {
-    ostringstream o;
-    say_hello (o, "World");
-    assert (o.str () == "Hello, World!\n");
-  }
+  cvtest::TS* ts (cvtest::TS::ptr ());
+  assert (ts != nullptr);
 
-  // Empty name.
-  //
-  try
-  {
-    ostringstream o;
-    say_hello (o, "");
-    assert (false);
-  }
-  catch (const invalid_argument& e)
-  {
-    assert (e.what () == string ("empty name"));
-  }
+  ::testing::InitGoogleTest (&argc, argv);
+  assert (RUN_ALL_TESTS () == 0);
 }
