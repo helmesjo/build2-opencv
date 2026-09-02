@@ -48,3 +48,6 @@ location: libopencv-ts/
 
 :
 location: libopencv-ptcloud-tests/
+
+:
+location: libopencv-flann-tests/
