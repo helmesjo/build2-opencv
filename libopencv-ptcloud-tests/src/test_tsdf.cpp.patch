@@ -1,0 +1,10 @@
+--- test_tsdf.cpp.orig	2026-08-29 03:07:11
++++ test_tsdf.cpp	2026-09-03 00:53:19
+@@ -3,6 +3,7 @@
+ // of this distribution and at http://opencv.org/license.html
+ 
+ #include "test_precomp.hpp"
++#include <opencv2/highgui.hpp>
+ 
+ namespace opencv_test {
+ namespace {
