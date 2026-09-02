@@ -42,3 +42,6 @@ location: libopencv-stitching/
 
 :
 location: libopencv-video/
+
+:
+location: libopencv-ts/
