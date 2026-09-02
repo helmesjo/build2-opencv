@@ -51,3 +51,6 @@ location: libopencv-ptcloud-tests/
 
 :
 location: libopencv-flann-tests/
+
+:
+location: libopencv-highgui-tests/
