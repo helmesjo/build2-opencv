@@ -1,6 +1,36 @@
+# This library is test-support infrastructure for the accompanying
+# <pkg>-tests packages: it does not participate in this package's own
+# default `./` target set unless config.libopencv_ts.build is true (see
+# ../build/root.build), so a bare `b`/`bdep update` here builds nothing
+# by default. Importing lib{opencv-ts} directly, as a <pkg>-tests
+# package's `require`d dependency does, still resolves and builds it
+# regardless of this variable -- `include` only controls default-set
+# membership, not target resolution. The declarations below stay
+# unconditional (no `if` around them): the build graph itself must not
+# vary by configuration, only what gets built by default, per
+# HOWTO/config-independent-build-graph.md.
+#
+./: lib{opencv-ts}: include = $config.libopencv_ts.build
+
 intf_libs = # Interface dependencies.
 impl_libs = # Implementation dependencies.
-#import xxxx_libs += libhello%lib{hello}
+
+# ts.hpp includes opencv2/core.hpp and opencv2/imgproc.hpp directly (patched
+# to drop unconditional imgcodecs/videoio/highgui includes that nothing in
+# this package or its own reference-oracle helpers actually uses, see
+# ../include/opencv2/ts.hpp.patch); both are interface dependencies, since
+# any consumer of the public ts.hpp needs both resolvable (confirmed by a
+# clean build: declaring imgproc implementation-only, matching how it is
+# actually used inside ts_func.cpp's threshold() reference oracle, still
+# fails a consumer's own build with "opencv2/imgproc.hpp file not found").
+# gtest replaces the vendored ts_gtest.h/ts_gtest.cpp (see the same patch).
+# Linked statically (liba{}, not the polymorphic lib{}): the shared variant
+# exports -DGTEST_LINKED_AS_SHARED_LIBRARY=1, which precomp.hpp #errors on
+# (upstream never supports linking ts against a shared gtest).
+#
+import intf_libs += libopencv-core%lib{opencv-core}
+import intf_libs += libopencv-imgproc%lib{opencv-imgproc}
+import intf_libs += gtest%liba{gtest}
 
 # Public headers.
 #
@@ -26,6 +56,11 @@ src_pfx_src = [dir_path] $src_root/src/
 cxx.poptions =+ "-I$out_pfx_src" "-I$src_pfx_src" \
                 "-I$out_pfx_inc" "-I$src_pfx_inc"
 
+# OpenCV's own module sources gate their private headers on this macro
+# (upstream's CMake build defines it for every module's own compilation).
+#
+cxx.poptions += -D__OPENCV_BUILD=1
+
 #obja{*}: cxx.poptions += -DOPENCV2_STATIC_BUILD
 #objs{*}: cxx.poptions += -DOPENCV2_SHARED_BUILD
 
@@ -33,7 +68,7 @@ cxx.poptions =+ "-I$out_pfx_src" "-I$src_pfx_src" \
 #
 lib{opencv-ts}:
 {
-  cxx.export.poptions = "-I$out_pfx_inc" "-I$src_pfx_inc"
+  cxx.export.poptions = "-I$out_pfx_inc" "-I$src_pfx_inc" -DHAVE_OPENCV_TS
   cxx.export.libs = $intf_libs
 }
 

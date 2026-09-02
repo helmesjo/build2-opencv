@@ -2,8 +2,9 @@
 #
 #cxx.internal.scope = current
 
-cxx.std = latest
+cxx.std = 17
 
+using config
 using cxx
 
 hxx{*}: extension = hpp
@@ -14,3 +15,11 @@ cxx{*}: extension = cpp
 # The test target for cross-testing (running tests under Wine, etc).
 #
 test.target = $cxx.target
+
+# This package is test-support infrastructure for the accompanying
+# <pkg>-tests packages, not meant to be pulled in by an ordinary
+# depends. A <pkg>-tests package opts in explicitly via
+# `require { config.libopencv_ts.build = true }` in its own depends
+# clause on this package.
+#
+config [bool] config.libopencv_ts.build ?= false
