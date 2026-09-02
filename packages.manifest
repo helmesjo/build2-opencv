@@ -54,3 +54,6 @@ location: libopencv-flann-tests/
 
 :
 location: libopencv-highgui-tests/
+
+:
+location: libopencv-imgcodecs-tests/
