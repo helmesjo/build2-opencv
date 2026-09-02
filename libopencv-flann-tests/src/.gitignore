@@ -1,0 +1,5 @@
+libopencv-flann-tests
+
+# Testscript output directory (can be symlink).
+#
+test-libopencv-flann-tests
