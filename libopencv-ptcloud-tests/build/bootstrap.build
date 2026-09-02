@@ -1,0 +1,7 @@
+project = libopencv-ptcloud-tests
+
+using version
+using config
+using test
+using install
+using dist
