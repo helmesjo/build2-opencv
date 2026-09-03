@@ -18,3 +18,5 @@ depends: * build2 >= 0.18.0
 depends: * bpkg >= 0.18.0
 depends: libopencv-imgcodecs == $
 depends: libopencv-ts == $
+build-exclude: *-msvc_14** ; Requires cxx.predefs.
+build-exclude: *-gcc_4** ; Requires C++17.
