@@ -1,0 +1,5 @@
+libopencv-geometry-tests
+
+# Testscript output directory (can be symlink).
+#
+test-libopencv-geometry-tests
