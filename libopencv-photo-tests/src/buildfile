@@ -10,7 +10,7 @@ import libs += libopencv-photo%lib{opencv-photo}
 import libs += libopencv-imgcodecs%lib{opencv-imgcodecs}
 import libs += libopencv-ts%lib{opencv-ts}
 
-exe{libopencv-photo-tests}: {hxx ixx txx cxx}{**} $libs
+exe{libopencv-photo-tests}: {hxx ixx txx cxx}{**} $libs testscript
 
 # Photo_ColorCorrection.compute_color_correction_matrix, .correct_image,
 # and .serialization (test_ccm.cpp), and Photo_Inpaint.regression
@@ -21,7 +21,6 @@ skip_tests = "-Photo_ColorCorrection.compute_color_correction_matrix:Photo_Color
 
 exe{libopencv-photo-tests}:
 {
-  test = true
   test.arguments = --gtest_brief=1 "--gtest_filter=$skip_tests"
 }
 
