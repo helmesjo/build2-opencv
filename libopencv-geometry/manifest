@@ -17,3 +17,4 @@ depends: * build2 >= 0.18.0
 depends: * bpkg >= 0.18.0
 depends: libopencv-core == $
 depends: libopencv-flann == $
+tests: libopencv-geometry-tests == $
