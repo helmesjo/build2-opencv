@@ -12,9 +12,8 @@ import libs += libopencv-geometry%lib{opencv-geometry}
 import libs += libopencv-imgcodecs%lib{opencv-imgcodecs}
 import libs += libopencv-ts%lib{opencv-ts}
 
-exe{libopencv-stereo-tests}: {hxx ixx txx cxx}{**} $libs
+exe{libopencv-stereo-tests}: {hxx ixx txx cxx}{**} $libs testscript
 {
-  test = true
   test.arguments = --gtest_brief=1
 }
 
