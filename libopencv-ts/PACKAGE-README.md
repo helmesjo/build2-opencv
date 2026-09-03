@@ -3,24 +3,29 @@
 This is a `build2` package for the [`ts`](https://github.com/opencv/opencv/tree/5.0.0/modules/ts)
 module of the [`OpenCV`](https://github.com/opencv/opencv) C++ library. It
 provides the assertion macros, `Mat`-comparison helpers, and reference-oracle
-implementations that OpenCV's own module test suites are written against.
+implementations that OpenCV's own module test suites are written against,
+along with the OpenCL/CUDA-flavored test and performance-test helpers
+(`ts/ocl_test.hpp`, `ts/cuda_test.hpp`, `ts/ocl_perf.hpp`, `ts/cuda_perf.hpp`)
+that a number of modules' test files rely on for `Mat`-comparison macros
+(`EXPECT_MAT_NEAR` and friends) and randomized-fixture helpers, even where
+this project builds neither backend: none of that code actually needs a
+real OpenCL or CUDA SDK, only OpenCV's own always-compilable `cv::ocl`/
+`cv::cuda` API surface.
 
 This package exists to support the accompanying `lib<pkg>-tests` packages
 (see e.g. `libopencv-ptcloud-tests`). It is not intended for direct or
 general use, and its library does not build unless a dependent explicitly
-requests it, see Configuration variables below.
+requests it, see Configuration variables below. Since the only consumers
+are test packages, this package matches upstream's own module dependency
+list and header set rather than trimming to the minimum its own code
+strictly needs: there is no real benefit to a leaner surface here, and
+matching upstream keeps every test file that relies on `ts.hpp`'s
+umbrella includes (`imread`/`imwrite`/`imshow`/`waitKey` without its own
+`#include`) working unmodified.
 
-Upstream's `ts.hpp` unconditionally vendors its own bundled Google Test fork
-(`ts_gtest.h`/`ts_gtest.cpp`) and unconditionally includes `imgcodecs.hpp`,
-`videoio.hpp`, and `highgui.hpp`, none of which this package's own code (or
-this repository's OpenCL/CUDA-less builds) actually uses outside upstream's
-optional `ocl_test.hpp`/`cuda_test.hpp` backend-test helpers, which this
-package does not include. `ts.hpp` is patched (see
-`include/opencv2/ts.hpp.patch`) to include the real `gtest` package instead
-of the vendored fork, and to drop those three unconditional includes. A
-`<pkg>-tests` package whose upstream test files rely on the transitive
-`imgcodecs.hpp`/`videoio.hpp`/`highgui.hpp` include must add its own direct
-dependency and `#include` instead.
+`ts.hpp` is patched (see `include/opencv2/ts.hpp.patch`) to include the
+real `gtest` package instead of the vendored `ts_gtest.h`/`ts_gtest.cpp`
+fork.
 
 
 ## Usage
@@ -57,11 +62,9 @@ lib{opencv-ts}
 ```
 
 `lib{opencv-ts}` is the OpenCV `ts` module: `CV_TEST_MAIN`, the `cvtest::TS`
-harness, `Mat`-comparison assertions, and reference-oracle implementations
-used by upstream's own accuracy tests. The performance-testing half
-(`ts/ts_perf.hpp`) is included; upstream's OpenCL/CUDA backend test helpers
-(`ts/ocl_test.hpp`, `ts/cuda_test.hpp`) are not, since no module packaged in
-this repository builds either backend.
+harness, `Mat`-comparison assertions, reference-oracle implementations used
+by upstream's own accuracy tests, and the OpenCL/CUDA test/perf-test helper
+headers described above.
 
 
 ## Configuration variables
