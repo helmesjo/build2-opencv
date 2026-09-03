@@ -17,4 +17,7 @@ depends: * build2 >= 0.18.0
 depends: * bpkg >= 0.18.0
 depends: libopencv-core == $
 depends: libopencv-imgproc == $
+depends: libopencv-imgcodecs == $
+depends: libopencv-videoio == $
+depends: libopencv-highgui == $
 depends: gtest ^1.11.0

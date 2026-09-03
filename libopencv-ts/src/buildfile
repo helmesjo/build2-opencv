@@ -15,21 +15,27 @@
 intf_libs = # Interface dependencies.
 impl_libs = # Implementation dependencies.
 
-# ts.hpp includes opencv2/core.hpp and opencv2/imgproc.hpp directly (patched
-# to drop unconditional imgcodecs/videoio/highgui includes that nothing in
-# this package or its own reference-oracle helpers actually uses, see
-# ../include/opencv2/ts.hpp.patch); both are interface dependencies, since
-# any consumer of the public ts.hpp needs both resolvable (confirmed by a
-# clean build: declaring imgproc implementation-only, matching how it is
-# actually used inside ts_func.cpp's threshold() reference oracle, still
-# fails a consumer's own build with "opencv2/imgproc.hpp file not found").
-# gtest replaces the vendored ts_gtest.h/ts_gtest.cpp (see the same patch).
-# Linked statically (liba{}, not the polymorphic lib{}): the shared variant
-# exports -DGTEST_LINKED_AS_SHARED_LIBRARY=1, which precomp.hpp #errors on
+# This package matches upstream's own module dependency list
+# (core, imgproc, imgcodecs, videoio, highgui) rather than the minimal
+# set ts's own code strictly needs: it exists solely to support the
+# <pkg>-tests packages, so there is no benefit to a consumer from
+# trimming what it exports, and matching upstream keeps every test file
+# that transitively relies on ts.hpp's umbrella includes (imread/imwrite/
+# imshow/waitKey without its own #include) working unmodified, along with
+# ocl_test.hpp/cuda_test.hpp's own real (non-OpenCL/CUDA-runtime) use of
+# imgcodecs/videoio/highgui/core::ocl/core::cuda. All are interface
+# dependencies, since ts.hpp itself includes all of them.
+# gtest replaces the vendored ts_gtest.h/ts_gtest.cpp (see
+# ../include/opencv2/ts.hpp.patch). Linked statically (liba{}, not the
+# polymorphic lib{}): the shared variant exports
+# -DGTEST_LINKED_AS_SHARED_LIBRARY=1, which precomp.hpp #errors on
 # (upstream never supports linking ts against a shared gtest).
 #
 import intf_libs += libopencv-core%lib{opencv-core}
 import intf_libs += libopencv-imgproc%lib{opencv-imgproc}
+import intf_libs += libopencv-imgcodecs%lib{opencv-imgcodecs}
+import intf_libs += libopencv-videoio%lib{opencv-videoio}
+import intf_libs += libopencv-highgui%lib{opencv-highgui}
 import intf_libs += gtest%liba{gtest}
 
 # Public headers.
