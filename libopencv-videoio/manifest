@@ -18,3 +18,4 @@ depends: * bpkg >= 0.18.0
 depends: libopencv-core == $
 depends: libopencv-imgproc == $
 depends: libopencv-imgcodecs == $
+tests: libopencv-videoio-tests == $
