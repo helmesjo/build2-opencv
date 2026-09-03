@@ -14,7 +14,7 @@ import libs += libopencv-videoio%lib{opencv-videoio}
 import libs += libopencv-imgcodecs%lib{opencv-imgcodecs}
 import libs += libopencv-ts%lib{opencv-ts}
 
-exe{libopencv-geometry-tests}: {hxx ixx txx cxx}{**} $libs
+exe{libopencv-geometry-tests}: {hxx ixx txx cxx}{**} $libs testscript
 
 # fisheyeTest.undistortImage/undistortAndDistortImage (test_fisheye.cpp)
 # and Calib3d_Homography.fromImages (test_homography.cpp) read fixture
@@ -25,7 +25,6 @@ skip_tests = "-fisheyeTest.undistortImage:fisheyeTest.undistortAndDistortImage:C
 
 exe{libopencv-geometry-tests}:
 {
-  test = true
   test.arguments = --gtest_brief=1 "--gtest_filter=$skip_tests"
 }
 
