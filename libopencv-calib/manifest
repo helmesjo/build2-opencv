@@ -19,3 +19,6 @@ depends: libopencv-core == $
 depends: libopencv-geometry == $
 depends: libopencv-imgproc == $
 depends: libopencv-features == $
+tests: libopencv-calib-tests == $
+build-exclude: *-msvc_14** ; Requires cxx.predefs.
+build-exclude: *-gcc_4** ; Requires C++17.
