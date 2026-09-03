@@ -72,3 +72,6 @@ location: libopencv-videoio-tests/
 
 :
 location: libopencv-geometry-tests/
+
+:
+location: libopencv-calib-tests/
