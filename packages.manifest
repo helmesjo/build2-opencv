@@ -63,3 +63,6 @@ location: libopencv-stitching-tests/
 
 :
 location: libopencv-core-tests/
+
+:
+location: libopencv-features-tests/
