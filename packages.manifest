@@ -81,3 +81,6 @@ location: libopencv-photo-tests/
 
 :
 location: libopencv-video-tests/
+
+:
+location: libopencv-objdetect-tests/
