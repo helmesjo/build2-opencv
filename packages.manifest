@@ -60,3 +60,6 @@ location: libopencv-imgcodecs-tests/
 
 :
 location: libopencv-stitching-tests/
+
+:
+location: libopencv-core-tests/
