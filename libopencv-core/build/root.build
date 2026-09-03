@@ -5,11 +5,44 @@
 cxx.std = 17
 
 using cxx
+using cxx.predefs
+
+# OpenCV fails some tests when char is unsigned by default
+# (upstream cmake/OpenCVCompilerOptions.cmake). AArch64 Linux has
+# unsigned char. MSVC char is already signed.
+#
+if ($cxx.class != 'msvc')
+  cxx.coptions += -fsigned-char
+
+# MSVC ARM64: uint8x16_t and int8x16_t are aliases unless this is
+# defined (cpu_neon.cpp, same cmake file).
+#
+if ($cxx.class == 'msvc' && $cxx.target.cpu == 'aarch64')
+  cxx.poptions += -D_ARM64_DISTINCT_NEON_TYPES
 
 hxx{*}: extension = hpp
 ixx{*}: extension = ipp
 txx{*}: extension = tpp
 cxx{*}: extension = cpp
+
+# This module compiles CPU SIMD intrinsics (see include/buildfile's
+# cv_cpu_config.h generation). NEON is architecturally mandatory on
+# aarch64 (unlike x86, where baseline SIMD is auto-detected and never
+# assumed), so this module's aarch64 baseline always includes it. At
+# least one Apple clang toolchain confirmed miscompiles baseline NEON
+# intrinsics at the compiler's default (no -O flag, i.e. -O0-equivalent)
+# optimization level, producing silently wrong arithmetic results rather
+# than a build failure. -O1 fixed it with no other change. -O0 is not
+# supported on aarch64 here (a debug superbuild forwarding it would fail
+# the test suite), so it is overridden by appending -O1 (later flag
+# wins). A higher -O already present is left alone.
+#
+if ($cxx.target.cpu == 'aarch64')
+{
+  if (!$regex.find_match($cxx.coptions $config.cxx.coptions, '[-\/]O[a-zA-Z0-9]') \
+      || $regex.find_match($cxx.coptions $config.cxx.coptions, '[-\/]O[0d]'))
+    cxx.coptions += -O1
+}
 
 # The test target for cross-testing (running tests under Wine, etc).
 #

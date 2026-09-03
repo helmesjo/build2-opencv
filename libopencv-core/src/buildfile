@@ -26,6 +26,7 @@ lib{opencv-core}: $pub/{$pub_hdrs}
 #
 lib{opencv-core}: {hxx ixx txx cxx}{**} $impl_libs $intf_libs
 lib{opencv-core}: file{version_string.inc}: include = adhoc
+lib{opencv-core}: $pub/h{cv_cpu_probe}
 
 # Build options.
 #
