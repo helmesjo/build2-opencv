@@ -10,7 +10,7 @@ import libs += libopencv-videoio%lib{opencv-videoio}
 import libs += libopencv-imgcodecs%lib{opencv-imgcodecs}
 import libs += libopencv-ts%lib{opencv-ts}
 
-exe{libopencv-videoio-tests}: {hxx ixx txx cxx}{**} $libs
+exe{libopencv-videoio-tests}: {hxx ixx txx cxx}{**} $libs testscript
 
 # AudioOpenCheck.bad_arg_invalid_audio_sample_per_second (test_audio.cpp)
 # opens a real (required) fixture file without gating on hasBackend()
@@ -35,7 +35,6 @@ skip_tests = "-AudioOpenCheck.bad_arg_invalid_audio_sample_per_second:videoio_bu
 
 exe{libopencv-videoio-tests}:
 {
-  test = true
   test.arguments = --gtest_brief=1 "--gtest_filter=$skip_tests"
 }
 
