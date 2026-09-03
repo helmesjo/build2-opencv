@@ -8,9 +8,8 @@ import libs += libopencv-ptcloud%lib{opencv-ptcloud}
 import libs += libopencv-highgui%lib{opencv-highgui}
 import libs += libopencv-ts%lib{opencv-ts}
 
-exe{libopencv-ptcloud-tests}: {hxx ixx txx cxx}{**} $libs
+exe{libopencv-ptcloud-tests}: {hxx ixx txx cxx}{**} $libs testscript
 {
-  test = true
   test.arguments = --gtest_brief=1
 }
 
