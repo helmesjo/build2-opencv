@@ -66,3 +66,6 @@ location: libopencv-core-tests/
 
 :
 location: libopencv-features-tests/
+
+:
+location: libopencv-videoio-tests/
