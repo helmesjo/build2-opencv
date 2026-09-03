@@ -6,6 +6,19 @@ cxx.std = 17
 
 using cxx
 
+# OpenCV fails some tests when char is unsigned by default
+# (upstream cmake/OpenCVCompilerOptions.cmake). AArch64 Linux has
+# unsigned char. MSVC char is already signed.
+#
+if ($cxx.class != 'msvc')
+  cxx.coptions += -fsigned-char
+
+# MSVC ARM64: uint8x16_t and int8x16_t are aliases unless this is
+# defined (cpu_neon.cpp, same cmake file).
+#
+if ($cxx.class == 'msvc' && $cxx.target.cpu == 'aarch64')
+  cxx.poptions += -D_ARM64_DISTINCT_NEON_TYPES
+
 hxx{*}: extension = hpp
 ixx{*}: extension = ipp
 txx{*}: extension = tpp

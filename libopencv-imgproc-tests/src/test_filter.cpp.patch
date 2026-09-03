@@ -1,0 +1,22 @@
+--- test_filter.cpp.orig	2026-08-29 03:07:02
++++ test_filter.cpp	2026-09-03 03:58:13
+@@ -1220,8 +1220,7 @@
+ }
+ 
+ INSTANTIATE_TEST_CASE_P(/**/, Imgproc_sepFilter2D_outTypes,
+-    testing::Values(CV_16S, CV_32F, CV_64F),
+-);
++    testing::Values(CV_16S, CV_32F, CV_64F));
+ 
+ typedef testing::TestWithParam<int> Imgproc_sepFilter2D_types;
+ TEST_P(Imgproc_sepFilter2D_types, simple)
+@@ -1244,8 +1243,7 @@
+ }
+ 
+ INSTANTIATE_TEST_CASE_P(/**/, Imgproc_sepFilter2D_types,
+-    testing::Values(CV_16S, CV_32F, CV_64F),
+-);
++    testing::Values(CV_16S, CV_32F, CV_64F));
+ 
+ // Verify that the tiled parallel FilterEngine path produces bit-exact results
+ // compared to the sequential (single-threaded) path for large images.

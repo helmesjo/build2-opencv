@@ -1,0 +1,1 @@
+../../upstream/modules/imgproc/test/test_contours_truco.cpp
