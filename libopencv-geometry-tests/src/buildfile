@@ -1,0 +1,37 @@
+libs =
+
+# test_normal_estimation.cpp includes opencv2/flann.hpp directly, and
+# test_fisheye.cpp includes opencv2/videoio.hpp (unused); libopencv-geometry
+# only impl-depends on flann, so both need to be explicit here.
+# imgcodecs is also impl-only (test_fisheye.cpp calls imread/imwrite), but
+# libopencv-ts itself depends on it (matching upstream's own ts module
+# dependency list), so it would be available transitively via
+# libopencv-ts regardless; kept explicit here for clarity.
+#
+import libs += libopencv-geometry%lib{opencv-geometry}
+import libs += libopencv-flann%lib{opencv-flann}
+import libs += libopencv-videoio%lib{opencv-videoio}
+import libs += libopencv-imgcodecs%lib{opencv-imgcodecs}
+import libs += libopencv-ts%lib{opencv-ts}
+
+exe{libopencv-geometry-tests}: {hxx ixx txx cxx}{**} $libs
+
+# fisheyeTest.undistortImage/undistortAndDistortImage (test_fisheye.cpp)
+# and Calib3d_Homography.fromImages (test_homography.cpp) read fixture
+# images from the separate opencv_extra test-data repository, which this
+# repository does not fetch.
+#
+skip_tests = "-fisheyeTest.undistortImage:fisheyeTest.undistortAndDistortImage:Calib3d_Homography.fromImages"
+
+exe{libopencv-geometry-tests}:
+{
+  test = true
+  test.arguments = --gtest_brief=1 "--gtest_filter=$skip_tests"
+}
+
+cxx.poptions =+ "-I$out_root" "-I$src_root"
+
+# OpenCV's own module sources gate their private headers on this macro
+# (upstream's CMake build defines it for every module's own compilation).
+#
+cxx.poptions += -D__OPENCV_BUILD=1
