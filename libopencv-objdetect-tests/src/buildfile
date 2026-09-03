@@ -13,7 +13,7 @@ import libs += libopencv-geometry%lib{opencv-geometry}
 import libs += libopencv-imgcodecs%lib{opencv-imgcodecs}
 import libs += libopencv-ts%lib{opencv-ts}
 
-exe{libopencv-objdetect-tests}: {hxx ixx txx cxx}{**} $libs
+exe{libopencv-objdetect-tests}: {hxx ixx txx cxx}{**} $libs testscript
 
 # CV_ArucoDetectMarkers.regression_3192/regression_2492/
 # regression_contour_24220 (test_arucodetection.cpp) and
@@ -25,7 +25,6 @@ skip_tests = "-CV_ArucoDetectMarkers.regression_3192:CV_ArucoDetectMarkers.regre
 
 exe{libopencv-objdetect-tests}:
 {
-  test = true
   test.arguments = --gtest_brief=1 "--gtest_filter=$skip_tests"
 }
 
