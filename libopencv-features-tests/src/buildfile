@@ -10,7 +10,7 @@ import libs += libopencv-features%lib{opencv-features}
 import libs += libopencv-imgcodecs%lib{opencv-imgcodecs}
 import libs += libopencv-ts%lib{opencv-ts}
 
-exe{libopencv-features-tests}: {hxx ixx txx cxx}{**} $libs
+exe{libopencv-features-tests}: {hxx ixx txx cxx}{**} $libs testscript
 
 # test_orb.cpp's _1996 and MaskValue, and test_sift.cpp's descriptor_type,
 # read shared/lena.png and features2d/tsukuba.png from the separate
@@ -20,7 +20,6 @@ skip_tests = "-Features2D_ORB._1996:Features2D_ORB.MaskValue:Features2d_SIFT.des
 
 exe{libopencv-features-tests}:
 {
-  test = true
   test.arguments = --gtest_brief=1 "--gtest_filter=$skip_tests"
 }
 
