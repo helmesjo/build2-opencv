@@ -87,3 +87,6 @@ location: libopencv-objdetect-tests/
 
 :
 location: libopencv-stereo-tests/
+
+:
+location: libopencv-imgproc-tests/
