@@ -12,7 +12,7 @@ import libs += libopencv-geometry%lib{opencv-geometry}
 import libs += libopencv-imgcodecs%lib{opencv-imgcodecs}
 import libs += libopencv-ts%lib{opencv-ts}
 
-exe{libopencv-video-tests}: {hxx ixx txx cxx}{**} $libs
+exe{libopencv-video-tests}: {hxx ixx txx cxx}{**} $libs testscript
 
 # DenseOpticalFlow_DIS.ReferenceAccuracy and
 # DenseOpticalFlow_VariationalRefinement.ReferenceAccuracy
@@ -24,7 +24,6 @@ skip_tests = "-DenseOpticalFlow_DIS.ReferenceAccuracy:DenseOpticalFlow_Variation
 
 exe{libopencv-video-tests}:
 {
-  test = true
   test.arguments = --gtest_brief=1 "--gtest_filter=$skip_tests"
 }
 
