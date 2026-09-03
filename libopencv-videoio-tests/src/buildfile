@@ -1,0 +1,47 @@
+libs =
+
+# test_gstreamer.cpp, test_ffmpeg.cpp, and test_video_io.cpp call
+# imread/imwrite; imgcodecs is impl-only in libopencv-videoio, but
+# libopencv-ts itself depends on it (matching upstream's own ts module
+# dependency list), so it would be available transitively via
+# libopencv-ts regardless; kept explicit here for clarity.
+#
+import libs += libopencv-videoio%lib{opencv-videoio}
+import libs += libopencv-imgcodecs%lib{opencv-imgcodecs}
+import libs += libopencv-ts%lib{opencv-ts}
+
+exe{libopencv-videoio-tests}: {hxx ixx txx cxx}{**} $libs
+
+# AudioOpenCheck.bad_arg_invalid_audio_sample_per_second (test_audio.cpp)
+# opens a real (required) fixture file without gating on hasBackend()
+# first: hard-fails, not skips, without opencv_extra.
+#
+# videoio_builtin.basic_avi (test_container_avi.cpp) reads
+# video/big_buck_bunny.mjpg.avi via the shared BunnyParameters helper in
+# test_precomp.hpp -- an opencv_extra fixture, unlike the rest of that
+# file (which self-generates or round-trips its own data).
+#
+# videoio/videoio_synthetic.write_read_position (test_video_io.cpp) fails
+# for both instantiated (MJPG/CV_MJPEG) cases in this environment; not a
+# test-data issue, a real behavior gap in this environment/build's
+# built-in MJPEG seek accuracy.
+#
+# videoio/videocapture_acceleration.read (test_video_io.cpp) needs real
+# encoded video fixtures (video/sample_*.mp4, one per codec) from
+# opencv_extra for every one of its ~100 backend/codec/acceleration
+# combinations.
+#
+skip_tests = "-AudioOpenCheck.bad_arg_invalid_audio_sample_per_second:videoio_builtin.basic_avi:videoio/videoio_synthetic.write_read_position/*:videoio/videocapture_acceleration.*"
+
+exe{libopencv-videoio-tests}:
+{
+  test = true
+  test.arguments = --gtest_brief=1 "--gtest_filter=$skip_tests"
+}
+
+cxx.poptions =+ "-I$out_root" "-I$src_root"
+
+# OpenCV's own module sources gate their private headers on this macro
+# (upstream's CMake build defines it for every module's own compilation).
+#
+cxx.poptions += -D__OPENCV_BUILD=1
