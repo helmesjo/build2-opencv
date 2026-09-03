@@ -1,0 +1,32 @@
+libs =
+
+# test_cameracalibration_artificial.cpp includes opencv2/objdetect.hpp
+# directly; libopencv-calib doesn't depend on objdetect at all otherwise.
+# geometry is impl-only in libopencv-calib.
+#
+import libs += libopencv-calib%lib{opencv-calib}
+import libs += libopencv-geometry%lib{opencv-geometry}
+import libs += libopencv-objdetect%lib{opencv-objdetect}
+import libs += libopencv-ts%lib{opencv-ts}
+
+exe{libopencv-calib-tests}: {hxx ixx txx cxx}{**} $libs
+
+# Calib3d_CalibrateHandEye.regression_17986 and
+# Calib3d_CalibrateRobotWorldHandEye.regression (test_calibration_hand_eye.cpp)
+# read fixture files from the separate opencv_extra test-data repository,
+# which this repository does not fetch.
+#
+skip_tests = "-Calib3d_CalibrateHandEye.regression_17986:Calib3d_CalibrateRobotWorldHandEye.regression"
+
+exe{libopencv-calib-tests}:
+{
+  test = true
+  test.arguments = --gtest_brief=1 "--gtest_filter=$skip_tests"
+}
+
+cxx.poptions =+ "-I$out_root" "-I$src_root"
+
+# OpenCV's own module sources gate their private headers on this macro
+# (upstream's CMake build defines it for every module's own compilation).
+#
+cxx.poptions += -D__OPENCV_BUILD=1

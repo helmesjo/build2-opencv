@@ -1,0 +1,5 @@
+libopencv-calib-tests
+
+# Testscript output directory (can be symlink).
+#
+test-libopencv-calib-tests
