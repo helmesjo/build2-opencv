@@ -1,0 +1,5 @@
+libopencv-objdetect-tests
+
+# Testscript output directory (can be symlink).
+#
+test-libopencv-objdetect-tests

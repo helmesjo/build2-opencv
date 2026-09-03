@@ -1,0 +1,37 @@
+libs =
+
+# geometry is impl-only in libopencv-objdetect, but test_precomp.hpp
+# includes opencv2/geometry.hpp directly. imgcodecs is also impl-only
+# (test_cornerssubpix.cpp, test_arucodetection.cpp, and
+# test_charucodetection.cpp call imread/imwrite), but libopencv-ts itself
+# depends on it (matching upstream's own ts module dependency list), so
+# it would be available transitively via libopencv-ts regardless; kept
+# explicit here for clarity.
+#
+import libs += libopencv-objdetect%lib{opencv-objdetect}
+import libs += libopencv-geometry%lib{opencv-geometry}
+import libs += libopencv-imgcodecs%lib{opencv-imgcodecs}
+import libs += libopencv-ts%lib{opencv-ts}
+
+exe{libopencv-objdetect-tests}: {hxx ixx txx cxx}{**} $libs
+
+# CV_ArucoDetectMarkers.regression_3192/regression_2492/
+# regression_contour_24220 (test_arucodetection.cpp) and
+# Charuco.issue_14014 (test_charucodetection.cpp) read fixture images
+# from the separate opencv_extra test-data repository, which this
+# repository does not fetch.
+#
+skip_tests = "-CV_ArucoDetectMarkers.regression_3192:CV_ArucoDetectMarkers.regression_2492:CV_ArucoDetectMarkers.regression_contour_24220:Charuco.issue_14014"
+
+exe{libopencv-objdetect-tests}:
+{
+  test = true
+  test.arguments = --gtest_brief=1 "--gtest_filter=$skip_tests"
+}
+
+cxx.poptions =+ "-I$out_root" "-I$src_root"
+
+# OpenCV's own module sources gate their private headers on this macro
+# (upstream's CMake build defines it for every module's own compilation).
+#
+cxx.poptions += -D__OPENCV_BUILD=1
