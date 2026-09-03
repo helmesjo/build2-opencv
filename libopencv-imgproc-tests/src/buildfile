@@ -1,0 +1,36 @@
+libs =
+
+# geometry is impl-only in libopencv-imgproc, but test_precomp.hpp
+# includes opencv2/geometry.hpp directly. imgcodecs is also impl-only,
+# but libopencv-ts itself depends on it (matching upstream's own ts
+# module dependency list), so it would be available transitively via
+# libopencv-ts regardless; kept explicit here for clarity.
+#
+import libs += libopencv-imgproc%lib{opencv-imgproc}
+import libs += libopencv-geometry%lib{opencv-geometry}
+import libs += libopencv-imgcodecs%lib{opencv-imgcodecs}
+import libs += libopencv-ts%lib{opencv-ts}
+
+exe{libopencv-imgproc-tests}: {hxx ixx txx cxx}{**} $libs
+
+# Each excluded case below either reads fixture files from the separate
+# opencv_extra test-data repository (which this repository does not
+# fetch), or unconditionally imwrites a .png debug dump (GaussianBlurVsBitexact.approx
+# and Imgproc_ColorBayerVNG_Codes.regression27225_small; libopencv-imgcodecs
+# does not build PNG support). The vast majority of each file's other
+# cases are self-contained (synthetic data, hardcoded reference matrices).
+#
+skip_tests = "-GaussianBlurVsBitexact.approx/*:Imgproc_ColorBayerVNG_Codes.regression27225_small/*:ImgProc_Bayer2RGBA.accuracy:ImgProc_BayerEdgeAwareDemosaicing.accuracy:Imgproc_ColorBayer.regression:Imgproc_ColorBayerVNG_Strict.regression:Imgproc_ColorBayerVNG.regression:Imgproc_ConnectedComponents.regression:Drawing.fillpoly_contours:Drawing.fillpoly_match_lines:Drawing.ttf_text:Imgproc_sepFilter2D_outTypes.*:Imgproc_sepFilter2D_types.*:Imgproc_sepFilter2D.anchor:Imgproc_sepFilter2D.delta:Imgproc_sepFilter2D.identity:Imgproc_sepFilter2D.shift:Imgproc_sepFilter2D.zeroPadding:ImgProc/StandartHoughLinesTest.regression/*:ImgProc/StandartHoughLinesTest.regression_Vec2f/*:ImgProc/StandartHoughLinesTest.regression_Vec3f/*:ImgProc/ProbabilisticHoughLinesTest.regression/*:Imgproc_PhaseCorrelationIterative.accuracy_real_img:Imgproc_PhaseCorrelatorTest.accuracy_real_img:Imgproc_PhaseCorrelatorTest.float32_overflow:GaussianBlur_Bitexact.overflow_20792:GaussianBlur_Bitexact.regression_9863:Imgproc/StackBlur.regression/*:Imgproc/StackBlur_GaussianBlur.compare/*:Imgproc_AdaptiveThreshold.gauss_inv:Imgproc_AdaptiveThreshold.gauss:Imgproc_AdaptiveThreshold.mean_inv:Imgproc_AdaptiveThreshold.mean"
+
+exe{libopencv-imgproc-tests}:
+{
+  test = true
+  test.arguments = --gtest_brief=1 "--gtest_filter=$skip_tests"
+}
+
+cxx.poptions =+ "-I$out_root" "-I$src_root"
+
+# OpenCV's own module sources gate their private headers on this macro
+# (upstream's CMake build defines it for every module's own compilation).
+#
+cxx.poptions += -D__OPENCV_BUILD=1
