@@ -3,9 +3,8 @@ libs =
 import libs += libopencv-flann%lib{opencv-flann}
 import libs += libopencv-ts%lib{opencv-ts}
 
-exe{libopencv-flann-tests}: {hxx ixx txx cxx}{**} $libs
+exe{libopencv-flann-tests}: {hxx ixx txx cxx}{**} $libs testscript
 {
-  test = true
   test.arguments = --gtest_brief=1
 }
 
