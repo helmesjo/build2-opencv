@@ -1,0 +1,36 @@
+libs =
+
+# geometry is impl-only in libopencv-video, but test_precomp.hpp
+# includes opencv2/geometry.hpp directly. imgcodecs is also impl-only
+# (test_OF_accuracy.cpp calls imread/imwrite), but libopencv-ts itself
+# depends on it (matching upstream's own ts module dependency list), so
+# it would be available transitively via libopencv-ts regardless; kept
+# explicit here for clarity.
+#
+import libs += libopencv-video%lib{opencv-video}
+import libs += libopencv-geometry%lib{opencv-geometry}
+import libs += libopencv-imgcodecs%lib{opencv-imgcodecs}
+import libs += libopencv-ts%lib{opencv-ts}
+
+exe{libopencv-video-tests}: {hxx ixx txx cxx}{**} $libs
+
+# DenseOpticalFlow_DIS.ReferenceAccuracy and
+# DenseOpticalFlow_VariationalRefinement.ReferenceAccuracy
+# (test_OF_accuracy.cpp) read fixture images (RubberWhale) from the
+# separate opencv_extra test-data repository, which this repository does
+# not fetch.
+#
+skip_tests = "-DenseOpticalFlow_DIS.ReferenceAccuracy:DenseOpticalFlow_VariationalRefinement.ReferenceAccuracy"
+
+exe{libopencv-video-tests}:
+{
+  test = true
+  test.arguments = --gtest_brief=1 "--gtest_filter=$skip_tests"
+}
+
+cxx.poptions =+ "-I$out_root" "-I$src_root"
+
+# OpenCV's own module sources gate their private headers on this macro
+# (upstream's CMake build defines it for every module's own compilation).
+#
+cxx.poptions += -D__OPENCV_BUILD=1

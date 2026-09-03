@@ -1,0 +1,1 @@
+../../upstream/modules/video/test/test_camshift.cpp
