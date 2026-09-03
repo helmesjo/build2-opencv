@@ -19,3 +19,4 @@ depends: libopencv-core == $
 depends: libopencv-geometry == $
 depends: libopencv-imgproc == $
 depends: libopencv-features == $
+tests: libopencv-calib-tests == $
