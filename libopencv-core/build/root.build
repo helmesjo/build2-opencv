@@ -5,11 +5,39 @@
 cxx.std = 17
 
 using cxx
+using cxx.predefs
 
 hxx{*}: extension = hpp
 ixx{*}: extension = ipp
 txx{*}: extension = tpp
 cxx{*}: extension = cpp
+
+# This module compiles CPU SIMD intrinsics (see include/buildfile's
+# cv_cpu_config.h generation). NEON is architecturally mandatory on
+# aarch64 (unlike x86, where baseline SIMD is auto-detected and never
+# assumed), so this module's aarch64 baseline always includes it. At
+# least one Apple clang toolchain confirmed miscompiles baseline NEON
+# intrinsics at the compiler's default (no -O flag, i.e. -O0-equivalent)
+# optimization level, producing silently wrong arithmetic results rather
+# than a build failure -- verified against the full libopencv-core-tests
+# suite, -O1 fixed it with no other change. This is a correctness
+# requirement, not a performance tuning choice, so it is scoped to
+# exactly the target where it is needed, and only added if no
+# optimization level is already present (never downgrading an explicit
+# -O0 into silence, nor duplicating an already-higher level).
+#
+if ($cxx.target.cpu == 'aarch64')
+{
+  is_opt_disabled = $regex.find_match($cxx.coptions $config.cxx.coptions, '[-\/]O[0d]')
+
+  if (!$regex.find_match($cxx.coptions $config.cxx.coptions, '[-\/]O[a-zA-Z0-9]') || $is_opt_disabled)
+  {
+    if $is_opt_disabled
+      cxx.coptions = $regex.filter_out_match($cxx.coptions, '[-\/]O[0d]')
+
+    cxx.coptions += -O1
+  }
+}
 
 # The test target for cross-testing (running tests under Wine, etc).
 #

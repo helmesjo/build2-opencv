@@ -11,6 +11,30 @@ ixx{*}: extension = ipp
 txx{*}: extension = tpp
 cxx{*}: extension = cpp
 
+# test_intrin.cpp/test_intrin_utils.hpp use opencv2/core/hal/intrin.hpp's
+# CPU SIMD intrinsics directly (not just through libopencv-core's already
+# compiled implementation), so this package needs the same fix as
+# libopencv-core's own root.build, scoped and detected the same way: NEON
+# is architecturally mandatory on aarch64, and at least one Apple clang
+# toolchain confirmed miscompiles baseline NEON intrinsics at the
+# compiler's default (no -O flag) optimization level, producing silently
+# wrong arithmetic results. Only added if no optimization level is
+# already present (never downgrading an explicit -O0 into silence, nor
+# duplicating an already-higher level).
+#
+if ($cxx.target.cpu == 'aarch64')
+{
+  is_opt_disabled = $regex.find_match($cxx.coptions $config.cxx.coptions, '[-\/]O[0d]')
+
+  if (!$regex.find_match($cxx.coptions $config.cxx.coptions, '[-\/]O[a-zA-Z0-9]') || $is_opt_disabled)
+  {
+    if $is_opt_disabled
+      cxx.coptions = $regex.filter_out_match($cxx.coptions, '[-\/]O[0d]')
+
+    cxx.coptions += -O1
+  }
+}
+
 # The test target for cross-testing (running tests under Wine, etc).
 #
 test.target = $cxx.target

@@ -31,6 +31,15 @@ dependency list and header set, so `TestUtils`, `PARAM_TEST_CASE`, and the
 `EXPECT_MAT_NEAR`/`EXPECT_MAT_N_DIFF` macros these files rely on come from
 the real headers rather than a local reimplementation.
 
+`test_intrin.cpp` is patched: it unconditionally force-compiles
+`opencv2/core/hal/intrin.hpp` at 256-bit and 512-bit width to test AVX2/
+AVX512 SIMD, which only x86 backends can satisfy (NEON is fixed at 128
+bits), so that portion is now guarded to x86 targets. Its
+`float16x8_FP16` case is also patched to call the baseline FP16
+implementation directly instead of through a dispatch-style `opt_FP16::`
+namespace that only exists for genuine multi-TU CPU dispatch builds (this
+package doesn't build any).
+
 
 ## Importable targets
 

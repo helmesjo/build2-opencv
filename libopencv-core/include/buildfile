@@ -53,15 +53,71 @@ opencv2/core/utils/
 
 # cv_cpu_config.h is bare-#include'd (no opencv2/ prefix) from the public
 # opencv2/core/cv_cpu_dispatch.h, so it must be generated and installed at
-# the include/ root, not under opencv2/. This build has no CPU baseline or
-# dispatched optimizations configured, so both substitutions are empty.
+# the include/ root, not under opencv2/. The baseline substitution below is
+# derived from libbuild2-autoconf's own HAVE_NEON/HAVE_SSE2 builtin checks
+# (plus a local HAVE_FP16 check, absent from the builtin catalog, see
+# build/autoconf/checks/HAVE_FP16.h) rather than hardcoded, so it reflects
+# what the compiler/target actually support: NEON+FP16 on AArch64, SSE2 on
+# x86/x86_64, or nothing on an unrecognized target (matching the previous,
+# fully-disabled default). No CPU dispatched (runtime-selected) variants
+# are configured, so that substitution stays empty.
 #
 using autoconf
 
+h{cv_cpu_probe}: in{cv_cpu_probe}
+
+[rule_hint=cxx.predefs] buildfile{cv_cpu_probe}: h{cv_cpu_probe}
+{
+  cxx.predefs.poptions = false
+  cxx.predefs.default  = 0
+  cxx.predefs.macros = HAVE_NEON@have_neon HAVE_SSE2@have_sse2 HAVE_FP16@have_fp16
+}
+
+if ($build.meta_operation == 'perform')
+{
+  update buildfile{cv_cpu_probe}
+  source $path(buildfile{cv_cpu_probe})
+}
+else
+{
+  have_neon = false
+  have_sse2 = false
+  have_fp16 = false
+}
+
+if ($have_neon != 0 && $have_fp16 != 0)
+{
+  OPENCV_CPU_BASELINE_DEFINITIONS_CONFIGMAKE = "#define CV_CPU_COMPILE_NEON 1
+#define CV_CPU_BASELINE_COMPILE_NEON 1
+#define CV_CPU_COMPILE_FP16 1
+#define CV_CPU_BASELINE_COMPILE_FP16 1
+#define CV_CPU_BASELINE_FEATURES 0 \\
+    , CV_CPU_NEON \\
+    , CV_CPU_FP16"
+}
+elif ($have_neon != 0)
+{
+  OPENCV_CPU_BASELINE_DEFINITIONS_CONFIGMAKE = "#define CV_CPU_COMPILE_NEON 1
+#define CV_CPU_BASELINE_COMPILE_NEON 1
+#define CV_CPU_BASELINE_FEATURES 0 \\
+    , CV_CPU_NEON"
+}
+elif ($have_sse2 != 0)
+{
+  OPENCV_CPU_BASELINE_DEFINITIONS_CONFIGMAKE = "#define CV_CPU_COMPILE_SSE2 1
+#define CV_CPU_BASELINE_COMPILE_SSE2 1
+#define CV_CPU_BASELINE_FEATURES 0 \\
+    , CV_CPU_SSE2"
+}
+else
+  OPENCV_CPU_BASELINE_DEFINITIONS_CONFIGMAKE = '#define CV_CPU_BASELINE_FEATURES 0'
+
+OPENCV_CPU_DISPATCH_DEFINITIONS_CONFIGMAKE = '#define CV_CPU_DISPATCH_FEATURES 0'
+
 h{cv_cpu_config}: in{cv_cpu_config}
 {
-  OPENCV_CPU_BASELINE_DEFINITIONS_CONFIGMAKE = '#define CV_CPU_BASELINE_FEATURES 0'
-  OPENCV_CPU_DISPATCH_DEFINITIONS_CONFIGMAKE = '#define CV_CPU_DISPATCH_FEATURES 0'
+  OPENCV_CPU_BASELINE_DEFINITIONS_CONFIGMAKE = $OPENCV_CPU_BASELINE_DEFINITIONS_CONFIGMAKE
+  OPENCV_CPU_DISPATCH_DEFINITIONS_CONFIGMAKE = $OPENCV_CPU_DISPATCH_DEFINITIONS_CONFIGMAKE
 }
 
 ./: h{cv_cpu_config}
@@ -73,16 +129,19 @@ h{cv_cpu_config}: install = include/
 # therefore be generated and installed here too, not internally in src/,
 # so that sibling packages (which import this library and inherit this
 # include/ search path via export.poptions) can resolve it at their own
-# compile time. Every optional upstream feature is off for this baseline
-# build; only HAVE_INTTYPES_H is true (always available on POSIX, per the
-# template's own default).
+# compile time. CV_ENABLE_INTRINSICS is the master switch for the
+# HAL-vectorized code paths gated by cv_cpu_config.h above; on its own
+# (with an empty baseline feature list) it is a no-op, so it is safe to
+# leave on unconditionally. Every other optional upstream feature is off
+# for this baseline build; only HAVE_INTTYPES_H is true (always available
+# on POSIX, per the template's own default).
 #
 h{cvconfig}: in{cvconfig}
 {
   autoconf.flavor = cmake
 
   BUILD_SHARED_LIBS               = false
-  CV_ENABLE_INTRINSICS            = false
+  CV_ENABLE_INTRINSICS            = true
   CV_DISABLE_OPTIMIZATION         = false
   HAVE_CLAMDBLAS                  = false
   HAVE_CLAMDFFT                   = false
