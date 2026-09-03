@@ -1,0 +1,26 @@
+libs =
+
+# geometry is impl-only in libopencv-stereo, but test_geometry.cpp
+# includes opencv2/geometry.hpp directly. imgcodecs is also impl-only
+# (test_geometry.cpp calls imread/imwrite), but libopencv-ts itself
+# depends on it (matching upstream's own ts module dependency list), so
+# it would be available transitively via libopencv-ts regardless; kept
+# explicit here for clarity.
+#
+import libs += libopencv-stereo%lib{opencv-stereo}
+import libs += libopencv-geometry%lib{opencv-geometry}
+import libs += libopencv-imgcodecs%lib{opencv-imgcodecs}
+import libs += libopencv-ts%lib{opencv-ts}
+
+exe{libopencv-stereo-tests}: {hxx ixx txx cxx}{**} $libs
+{
+  test = true
+  test.arguments = --gtest_brief=1
+}
+
+cxx.poptions =+ "-I$out_root" "-I$src_root"
+
+# OpenCV's own module sources gate their private headers on this macro
+# (upstream's CMake build defines it for every module's own compilation).
+#
+cxx.poptions += -D__OPENCV_BUILD=1
