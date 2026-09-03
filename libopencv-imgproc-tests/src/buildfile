@@ -11,7 +11,7 @@ import libs += libopencv-geometry%lib{opencv-geometry}
 import libs += libopencv-imgcodecs%lib{opencv-imgcodecs}
 import libs += libopencv-ts%lib{opencv-ts}
 
-exe{libopencv-imgproc-tests}: {hxx ixx txx cxx}{**} $libs
+exe{libopencv-imgproc-tests}: {hxx ixx txx cxx}{**} $libs testscript
 
 # Each excluded case below either reads fixture files from the separate
 # opencv_extra test-data repository (which this repository does not
@@ -24,7 +24,6 @@ skip_tests = "-GaussianBlurVsBitexact.approx/*:Imgproc_ColorBayerVNG_Codes.regre
 
 exe{libopencv-imgproc-tests}:
 {
-  test = true
   test.arguments = --gtest_brief=1 "--gtest_filter=$skip_tests"
 }
 
