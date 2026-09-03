@@ -1,4 +1,4 @@
 import libs = libopencv-videoio%lib{opencv-videoio}
 import libs += libopencv-imgproc%lib{opencv-imgproc}
 
-exe{driver}: {hxx ixx txx cxx}{**} $libs testscript{**}
+exe{driver}: {hxx ixx txx cxx}{**} $libs testscript
