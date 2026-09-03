@@ -1,0 +1,27 @@
+libs =
+
+import libs += libopencv-core%lib{opencv-core}
+import libs += libopencv-ts%lib{opencv-ts}
+
+exe{libopencv-core-tests}: {hxx ixx txx cxx}{**} $libs
+
+# test_io.cpp: these read fixture files (lena.png, io/*) from the separate
+# opencv_extra test-data repository, which this repository does not
+# fetch. The rest of test_io.cpp (67 of 74 cases) is clean. Same for
+# test_utils.cpp's Samples.findFile, which looks up a sample image via
+# cv::samples::findFile.
+#
+skip_tests = "-Core_globbing.accuracy:Core_InputOutput.filestorage_base64_basic_read_XML:Core_InputOutput.filestorage_base64_basic_read_YAML:Core_InputOutput.filestorage_base64_basic_read_JSON:Core_InputOutput.filestorage_base64_basic_rw_XML:Core_InputOutput.filestorage_base64_basic_rw_YAML:Core_InputOutput.filestorage_base64_basic_rw_JSON:Samples.findFile"
+
+exe{libopencv-core-tests}:
+{
+  test = true
+  test.arguments = --gtest_brief=1 "--gtest_filter=$skip_tests"
+}
+
+cxx.poptions =+ "-I$out_root" "-I$src_root"
+
+# OpenCV's own module sources gate their private headers on this macro
+# (upstream's CMake build defines it for every module's own compilation).
+#
+cxx.poptions += -D__OPENCV_BUILD=1

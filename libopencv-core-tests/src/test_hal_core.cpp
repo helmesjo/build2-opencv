@@ -1,0 +1,1 @@
+../../upstream/modules/core/test/test_hal_core.cpp
