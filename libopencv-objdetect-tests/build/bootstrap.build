@@ -1,0 +1,7 @@
+project = libopencv-objdetect-tests
+
+using version
+using config
+using test
+using install
+using dist
