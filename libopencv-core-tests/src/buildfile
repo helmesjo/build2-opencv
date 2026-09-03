@@ -3,7 +3,7 @@ libs =
 import libs += libopencv-core%lib{opencv-core}
 import libs += libopencv-ts%lib{opencv-ts}
 
-exe{libopencv-core-tests}: {hxx ixx txx cxx}{**} $libs
+exe{libopencv-core-tests}: {hxx ixx txx cxx}{**} $libs testscript
 
 # test_io.cpp: these read fixture files (lena.png, io/*) from the separate
 # opencv_extra test-data repository, which this repository does not
@@ -15,7 +15,6 @@ skip_tests = "-Core_globbing.accuracy:Core_InputOutput.filestorage_base64_basic_
 
 exe{libopencv-core-tests}:
 {
-  test = true
   test.arguments = --gtest_brief=1 "--gtest_filter=$skip_tests"
 }
 
