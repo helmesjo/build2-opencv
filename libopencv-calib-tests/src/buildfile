@@ -9,7 +9,7 @@ import libs += libopencv-geometry%lib{opencv-geometry}
 import libs += libopencv-objdetect%lib{opencv-objdetect}
 import libs += libopencv-ts%lib{opencv-ts}
 
-exe{libopencv-calib-tests}: {hxx ixx txx cxx}{**} $libs
+exe{libopencv-calib-tests}: {hxx ixx txx cxx}{**} $libs testscript
 
 # Calib3d_CalibrateHandEye.regression_17986 and
 # Calib3d_CalibrateRobotWorldHandEye.regression (test_calibration_hand_eye.cpp)
@@ -20,7 +20,6 @@ skip_tests = "-Calib3d_CalibrateHandEye.regression_17986:Calib3d_CalibrateRobotW
 
 exe{libopencv-calib-tests}:
 {
-  test = true
   test.arguments = --gtest_brief=1 "--gtest_filter=$skip_tests"
 }
 
