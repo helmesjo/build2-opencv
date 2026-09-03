@@ -78,3 +78,6 @@ location: libopencv-calib-tests/
 
 :
 location: libopencv-photo-tests/
+
+:
+location: libopencv-video-tests/
