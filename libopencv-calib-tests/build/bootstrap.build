@@ -1,0 +1,7 @@
+project = libopencv-calib-tests
+
+using version
+using config
+using test
+using install
+using dist

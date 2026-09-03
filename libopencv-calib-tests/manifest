@@ -1,0 +1,30 @@
+: 1
+name: libopencv-calib-tests
+version: 5.0.0-a.0.z
+type: exe
+language: c++
+project: opencv
+summary: Camera calibration and 3D reconstruction C++ library from OpenCV (tests)
+license: Apache-2.0
+topics: C++, computer vision, camera calibration, testing
+description-file: README.md
+package-description-file: PACKAGE-README.md
+url: https://opencv.org/
+doc-url: https://docs.opencv.org/5.x/
+src-url: https://github.com/opencv/opencv/
+package-url: https://github.com/build2-packaging/opencv/
+package-email: helmesjo@gmail.com
+depends: * build2 >= 0.18.0
+depends: * bpkg >= 0.18.0
+depends: libopencv-geometry == $
+depends: libopencv-objdetect == $
+depends:
+\
+libopencv-ts == $
+{
+  require
+  {
+    config.libopencv_ts.build = true
+  }
+}
+\
