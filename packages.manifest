@@ -75,3 +75,6 @@ location: libopencv-geometry-tests/
 
 :
 location: libopencv-calib-tests/
+
+:
+location: libopencv-photo-tests/
