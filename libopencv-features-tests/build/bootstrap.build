@@ -1,0 +1,7 @@
+project = libopencv-features-tests
+
+using version
+using config
+using test
+using install
+using dist
