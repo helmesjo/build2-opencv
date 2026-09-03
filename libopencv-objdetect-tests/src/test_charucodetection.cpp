@@ -1,0 +1,1 @@
+../../upstream/modules/objdetect/test/test_charucodetection.cpp
