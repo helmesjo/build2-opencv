@@ -1,0 +1,5 @@
+# Discard the OpenCV startup diagnostics unless requested at verbosity 2+
+# (b test -v 2), matching the terse output of an ordinary passing test
+# run.
+#
+$* >! 2>! == 0
