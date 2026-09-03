@@ -1,0 +1,32 @@
+libs =
+
+# test_orb.cpp and test_sift.cpp call imread/imwrite; imgcodecs is
+# impl-only in libopencv-features, but libopencv-ts itself depends on it
+# (matching upstream's own ts module dependency list), so it would be
+# available transitively via libopencv-ts regardless; kept explicit here
+# for clarity.
+#
+import libs += libopencv-features%lib{opencv-features}
+import libs += libopencv-imgcodecs%lib{opencv-imgcodecs}
+import libs += libopencv-ts%lib{opencv-ts}
+
+exe{libopencv-features-tests}: {hxx ixx txx cxx}{**} $libs
+
+# test_orb.cpp's _1996 and MaskValue, and test_sift.cpp's descriptor_type,
+# read shared/lena.png and features2d/tsukuba.png from the separate
+# opencv_extra test-data repository, which this repository does not fetch.
+#
+skip_tests = "-Features2D_ORB._1996:Features2D_ORB.MaskValue:Features2d_SIFT.descriptor_type"
+
+exe{libopencv-features-tests}:
+{
+  test = true
+  test.arguments = --gtest_brief=1 "--gtest_filter=$skip_tests"
+}
+
+cxx.poptions =+ "-I$out_root" "-I$src_root"
+
+# OpenCV's own module sources gate their private headers on this macro
+# (upstream's CMake build defines it for every module's own compilation).
+#
+cxx.poptions += -D__OPENCV_BUILD=1

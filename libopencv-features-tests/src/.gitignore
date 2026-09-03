@@ -1,0 +1,5 @@
+libopencv-features-tests
+
+# Testscript output directory (can be symlink).
+#
+test-libopencv-features-tests
