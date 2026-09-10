@@ -5,14 +5,14 @@ libs =
 # only impl-depends on flann, so both need to be explicit here.
 # imgcodecs is also impl-only (test_fisheye.cpp calls imread/imwrite), but
 # libopencv-ts itself depends on it (matching upstream's own ts module
-# dependency list), so it would be available transitively via
-# libopencv-ts regardless; kept explicit here for clarity.
+# dependency list), so it is available transitively via libopencv-ts
+# regardless; kept explicit here for clarity.
 #
-import libs += libopencv-geometry%lib{opencv-geometry}
-import libs += libopencv-flann%lib{opencv-flann}
-import libs += libopencv-videoio%lib{opencv-videoio}
-import libs += libopencv-imgcodecs%lib{opencv-imgcodecs}
-import libs += libopencv-ts%liba{opencv-ts}
+import libs += libopencv-geometry%lib{opencv-geometry} \
+               libopencv-flann%lib{opencv-flann} \
+               libopencv-videoio%lib{opencv-videoio} \
+               libopencv-imgcodecs%lib{opencv-imgcodecs} \
+               libopencv-ts%liba{opencv-ts}
 
 exe{libopencv-geometry-tests}: {hxx ixx txx cxx}{**} $libs testscript
 

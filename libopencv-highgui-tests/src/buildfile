@@ -1,7 +1,7 @@
 libs =
 
-import libs += libopencv-highgui%lib{opencv-highgui}
-import libs += libopencv-ts%liba{opencv-ts}
+import libs += libopencv-highgui%lib{opencv-highgui} \
+               libopencv-ts%liba{opencv-ts}
 
 exe{libopencv-highgui-tests}: {hxx ixx txx cxx}{**} $libs testscript
 {

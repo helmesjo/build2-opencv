@@ -3,13 +3,13 @@ libs =
 # geometry is impl-only in libopencv-imgproc, but test_precomp.hpp
 # includes opencv2/geometry.hpp directly. imgcodecs is also impl-only,
 # but libopencv-ts itself depends on it (matching upstream's own ts
-# module dependency list), so it would be available transitively via
+# module dependency list), so it is available transitively via
 # libopencv-ts regardless; kept explicit here for clarity.
 #
-import libs += libopencv-imgproc%lib{opencv-imgproc}
-import libs += libopencv-geometry%lib{opencv-geometry}
-import libs += libopencv-imgcodecs%lib{opencv-imgcodecs}
-import libs += libopencv-ts%liba{opencv-ts}
+import libs += libopencv-imgproc%lib{opencv-imgproc} \
+               libopencv-geometry%lib{opencv-geometry} \
+               libopencv-imgcodecs%lib{opencv-imgcodecs} \
+               libopencv-ts%liba{opencv-ts}
 
 exe{libopencv-imgproc-tests}: {hxx ixx txx cxx}{**} $libs testscript
 

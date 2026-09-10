@@ -17,12 +17,12 @@ impl_libs = # Implementation dependencies.
 # OPENCV_MODULE_TYPE STATIC, and precomp.hpp #errors if
 # GTEST_LINKED_AS_SHARED_LIBRARY is defined.
 #
-import intf_libs += libopencv-core%lib{opencv-core}
-import intf_libs += libopencv-imgproc%lib{opencv-imgproc}
-import intf_libs += libopencv-imgcodecs%lib{opencv-imgcodecs}
-import intf_libs += libopencv-videoio%lib{opencv-videoio}
-import intf_libs += libopencv-highgui%lib{opencv-highgui}
-import intf_libs += gtest%liba{gtest}
+import intf_libs += libopencv-core%libs{opencv-core} \
+                    libopencv-imgproc%libs{opencv-imgproc} \
+                    libopencv-imgcodecs%libs{opencv-imgcodecs} \
+                    libopencv-videoio%libs{opencv-videoio} \
+                    libopencv-highgui%libs{opencv-highgui} \
+                    gtest%liba{gtest}
 
 # Public headers.
 #

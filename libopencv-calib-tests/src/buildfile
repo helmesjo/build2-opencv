@@ -4,10 +4,10 @@ libs =
 # directly; libopencv-calib doesn't depend on objdetect at all otherwise.
 # geometry is impl-only in libopencv-calib.
 #
-import libs += libopencv-calib%lib{opencv-calib}
-import libs += libopencv-geometry%lib{opencv-geometry}
-import libs += libopencv-objdetect%lib{opencv-objdetect}
-import libs += libopencv-ts%liba{opencv-ts}
+import libs += libopencv-calib%lib{opencv-calib} \
+               libopencv-geometry%lib{opencv-geometry} \
+               libopencv-objdetect%lib{opencv-objdetect} \
+               libopencv-ts%liba{opencv-ts}
 
 exe{libopencv-calib-tests}: {hxx ixx txx cxx}{**} $libs testscript
 

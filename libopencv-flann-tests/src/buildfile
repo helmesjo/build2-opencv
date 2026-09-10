@@ -1,7 +1,7 @@
 libs =
 
-import libs += libopencv-flann%lib{opencv-flann}
-import libs += libopencv-ts%liba{opencv-ts}
+import libs += libopencv-flann%lib{opencv-flann} \
+               libopencv-ts%liba{opencv-ts}
 
 exe{libopencv-flann-tests}: {hxx ixx txx cxx}{**} $libs testscript
 {

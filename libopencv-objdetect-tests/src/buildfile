@@ -5,13 +5,13 @@ libs =
 # (test_cornerssubpix.cpp, test_arucodetection.cpp, and
 # test_charucodetection.cpp call imread/imwrite), but libopencv-ts itself
 # depends on it (matching upstream's own ts module dependency list), so
-# it would be available transitively via libopencv-ts regardless; kept
-# explicit here for clarity.
+# it is available transitively via libopencv-ts regardless; kept explicit
+# here for clarity.
 #
-import libs += libopencv-objdetect%lib{opencv-objdetect}
-import libs += libopencv-geometry%lib{opencv-geometry}
-import libs += libopencv-imgcodecs%lib{opencv-imgcodecs}
-import libs += libopencv-ts%liba{opencv-ts}
+import libs += libopencv-objdetect%lib{opencv-objdetect} \
+               libopencv-geometry%lib{opencv-geometry} \
+               libopencv-imgcodecs%lib{opencv-imgcodecs} \
+               libopencv-ts%liba{opencv-ts}
 
 exe{libopencv-objdetect-tests}: {hxx ixx txx cxx}{**} $libs testscript
 

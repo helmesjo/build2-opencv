@@ -3,12 +3,12 @@ libs =
 # test_gstreamer.cpp, test_ffmpeg.cpp, and test_video_io.cpp call
 # imread/imwrite; imgcodecs is impl-only in libopencv-videoio, but
 # libopencv-ts itself depends on it (matching upstream's own ts module
-# dependency list), so it would be available transitively via
-# libopencv-ts regardless; kept explicit here for clarity.
+# dependency list), so it is available transitively via libopencv-ts
+# regardless; kept explicit here for clarity.
 #
-import libs += libopencv-videoio%lib{opencv-videoio}
-import libs += libopencv-imgcodecs%lib{opencv-imgcodecs}
-import libs += libopencv-ts%liba{opencv-ts}
+import libs += libopencv-videoio%lib{opencv-videoio} \
+               libopencv-imgcodecs%lib{opencv-imgcodecs} \
+               libopencv-ts%liba{opencv-ts}
 
 exe{libopencv-videoio-tests}: {hxx ixx txx cxx}{**} $libs testscript
 

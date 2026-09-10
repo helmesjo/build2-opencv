@@ -2,13 +2,12 @@ libs =
 
 # test_orb.cpp and test_sift.cpp call imread/imwrite; imgcodecs is
 # impl-only in libopencv-features, but libopencv-ts itself depends on it
-# (matching upstream's own ts module dependency list), so it would be
-# available transitively via libopencv-ts regardless; kept explicit here
-# for clarity.
+# (matching upstream's own ts module dependency list), so it is available
+# transitively via libopencv-ts regardless; kept explicit here for clarity.
 #
-import libs += libopencv-features%lib{opencv-features}
-import libs += libopencv-imgcodecs%lib{opencv-imgcodecs}
-import libs += libopencv-ts%liba{opencv-ts}
+import libs += libopencv-features%lib{opencv-features} \
+               libopencv-imgcodecs%lib{opencv-imgcodecs} \
+               libopencv-ts%liba{opencv-ts}
 
 exe{libopencv-features-tests}: {hxx ixx txx cxx}{**} $libs testscript
 

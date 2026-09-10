@@ -1,7 +1,7 @@
 libs =
 
-import libs += libopencv-imgcodecs%lib{opencv-imgcodecs}
-import libs += libopencv-ts%liba{opencv-ts}
+import libs += libopencv-imgcodecs%lib{opencv-imgcodecs} \
+               libopencv-ts%liba{opencv-ts}
 
 exe{libopencv-imgcodecs-tests}: {hxx ixx txx cxx}{**} $libs testscript
 {
