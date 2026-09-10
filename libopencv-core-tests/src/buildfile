@@ -1,9 +1,31 @@
 libs =
 
-import libs += libopencv-core%lib{opencv-core}
-import libs += libopencv-ts%liba{opencv-ts}
+import libs += libopencv-core%lib{opencv-core} \
+               libopencv-ts%liba{opencv-ts}
 
-exe{libopencv-core-tests}: {hxx ixx txx cxx}{**} $libs testscript
+exe{libopencv-core-tests}: {hxx ixx txx cxx}{** -*_sse4_1 -*_sse4_2 -*_avx2} $libs testscript
+
+# CPU dispatch TUs for intrinsic tests, compiled with the same ISA-specific
+# options as the library dispatch TUs.
+#
+exe{libopencv-core-tests}: cxx{*_sse4_1}: include = ($cxx.target.cpu == 'x86_64')
+exe{libopencv-core-tests}: cxx{*_sse4_2}: include = ($cxx.target.cpu == 'x86_64')
+exe{libopencv-core-tests}: cxx{*_avx2}:   include = ($cxx.target.cpu == 'x86_64')
+
+obje{*_sse4_1}: cxx.poptions += -DCV_CPU_DISPATCH_MODE=SSE4_1 -DCV_CPU_COMPILE_SSE4_1=1
+if ($cxx.class != 'msvc')
+  obje{*_sse4_1}: cxx.coptions += -msse4.1
+
+obje{*_sse4_2}: cxx.poptions += -DCV_CPU_DISPATCH_MODE=SSE4_2 \
+                                 -DCV_CPU_COMPILE_SSE4_2=1 -DCV_CPU_COMPILE_SSE4_1=1
+if ($cxx.class != 'msvc')
+  obje{*_sse4_2}: cxx.coptions += -msse4.2
+
+obje{*_avx2}: cxx.poptions += -DCV_CPU_DISPATCH_MODE=AVX2 -DCV_CPU_COMPILE_AVX2=1
+if ($cxx.class == 'msvc')
+  obje{*_avx2}: cxx.coptions += /arch:AVX2
+else
+  obje{*_avx2}: cxx.coptions += -mavx2
 
 # test_io.cpp: these read fixture files (lena.png, io/*) from the separate
 # opencv_extra test-data repository, which this repository does not
@@ -18,9 +40,17 @@ exe{libopencv-core-tests}:
   test.arguments = --gtest_brief=1 "--gtest_filter=$skip_tests"
 }
 
-cxx.poptions =+ "-I$out_root" "-I$src_root"
+cxx.poptions =+ "-I$out_root" "-I$src_root" "-I$src_base"
 
 # OpenCV's own module sources gate their private headers on this macro
 # (upstream's CMake build defines it for every module's own compilation).
 #
 cxx.poptions += -D__OPENCV_BUILD=1
+
+# Activate the dispatch ISA tiers that core provides, matching libopencv-core's
+# own cxx.poptions so the intrinsic dispatch tests exercise the same paths.
+#
+if ($cxx.target.cpu == 'x86_64')
+  cxx.poptions += -DCV_CPU_DISPATCH_COMPILE_SSE4_1=1 \
+                  -DCV_CPU_DISPATCH_COMPILE_SSE4_2=1 \
+                  -DCV_CPU_DISPATCH_COMPILE_AVX2=1

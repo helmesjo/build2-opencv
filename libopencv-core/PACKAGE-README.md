@@ -38,3 +38,14 @@ common utilities (logging, threading, CPU feature detection, file system).
 ## Configuration variables
 
 This package provides no configuration variables.
+
+
+## CPU dispatch
+
+OpenCV's CPU dispatch compiles compute-heavy routines once per ISA tier and
+selects the best available implementation at runtime via
+`checkHardwareSupport()`. Upstream CMake generates the per-ISA translation
+units and their companion `*.simd_declarations.hpp` files into the build
+directory at configure time; this package provides equivalent static files
+under `src/simd/`. On x86_64, SSE4.1, SSE4.2, and AVX2 tiers are compiled
+for the `libopencv-core` routines where upstream enables them.

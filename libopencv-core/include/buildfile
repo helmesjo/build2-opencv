@@ -29,8 +29,8 @@ pub_hdrs = {hxx ixx txx}{**} h{**}
 # build/autoconf/checks/HAVE_FP16.h) rather than hardcoded, so it reflects
 # what the compiler/target actually support: NEON+FP16 on AArch64, SSE2 on
 # x86/x86_64, or nothing on an unrecognized target (matching the previous,
-# fully-disabled default). No CPU dispatched (runtime-selected) variants
-# are configured, so that substitution stays empty.
+# fully-disabled default). On x86_64, SSE4.1, SSE4.2, and AVX2 dispatch
+# variants are also configured below.
 #
 using autoconf
 
@@ -87,9 +87,22 @@ elif (($cxx.target.cpu == 'x86_64' || $cxx.target.cpu == 'i686') && $have_sse2 !
 else
   OPENCV_CPU_BASELINE_DEFINITIONS_CONFIGMAKE = '#define CV_CPU_BASELINE_FEATURES 0'
 
-OPENCV_CPU_DISPATCH_DEFINITIONS_CONFIGMAKE = '#define CV_CPU_DISPATCH_FEATURES 0'
+# x86_64: SSE4.1, SSE4.2, and AVX2 dispatch variants.
+# CV_CPU_DISPATCH_FEATURES tells the runtime hardware-support database which
+# ISA tiers are in play. CV_CPU_DISPATCH_COMPILE_* are NOT set here because
+# they activate per-module dispatch code that expects corresponding per-ISA
+# TUs to exist; each module that actually ships such TUs sets those defines
+# via its own cxx.poptions instead.
+#
+if ($cxx.target.cpu == 'x86_64')
+  OPENCV_CPU_DISPATCH_DEFINITIONS_CONFIGMAKE = "#define CV_CPU_DISPATCH_FEATURES 0 \\
+    , CV_CPU_SSE4_1 \\
+    , CV_CPU_SSE4_2 \\
+    , CV_CPU_AVX2"
+else
+  OPENCV_CPU_DISPATCH_DEFINITIONS_CONFIGMAKE = '#define CV_CPU_DISPATCH_FEATURES 0'
 
-h{cv_cpu_config}: in{cv_cpu_config}
+h{cv_cpu_config}: in{cv_cpu_config} h{cv_cpu_probe}
 {
   OPENCV_CPU_BASELINE_DEFINITIONS_CONFIGMAKE = $OPENCV_CPU_BASELINE_DEFINITIONS_CONFIGMAKE
   OPENCV_CPU_DISPATCH_DEFINITIONS_CONFIGMAKE = $OPENCV_CPU_DISPATCH_DEFINITIONS_CONFIGMAKE

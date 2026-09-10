@@ -24,9 +24,50 @@ lib{opencv-core}: $pub/{$pub_hdrs}
 # it too); it does not need to be listed as an explicit prerequisite here
 # since build2's header dependency extraction discovers it dynamically.
 #
-lib{opencv-core}: {hxx ixx txx cxx}{**} $impl_libs $intf_libs
+lib{opencv-core}: {hxx ixx txx}{**} \
+                  cxx{** -simd/*_sse4_1 -simd/*_sse4_2 -simd/*_avx2} \
+                  $impl_libs $intf_libs
 lib{opencv-core}: file{version_string.inc}: include = adhoc
 lib{opencv-core}: $pub/h{cv_cpu_probe}
+
+# CPU dispatch sources: per-ISA TUs compiled with ISA-specific defines and (on
+# GCC/Clang) the required march flag. MSVC generates correct SSE4.1/SSE4.2 code
+# from intrinsics without /arch:*, but AVX2 requires /arch:AVX2.
+#
+lib{opencv-core}: cxx{simd/*_sse4_1}: include = ($cxx.target.cpu == 'x86_64')
+lib{opencv-core}: cxx{simd/*_sse4_2}: include = ($cxx.target.cpu == 'x86_64')
+lib{opencv-core}: cxx{simd/*_avx2}:   include = ($cxx.target.cpu == 'x86_64')
+
+obja{simd/*_sse4_1}: cxx.poptions += -DCV_CPU_DISPATCH_MODE=SSE4_1 -DCV_CPU_COMPILE_SSE4_1=1
+objs{simd/*_sse4_1}: cxx.poptions += -DCV_CPU_DISPATCH_MODE=SSE4_1 -DCV_CPU_COMPILE_SSE4_1=1
+if ($cxx.class != 'msvc')
+{
+  obja{simd/*_sse4_1}: cxx.coptions += -msse4.1
+  objs{simd/*_sse4_1}: cxx.coptions += -msse4.1
+}
+
+obja{simd/*_sse4_2}: cxx.poptions += -DCV_CPU_DISPATCH_MODE=SSE4_2 \
+                                      -DCV_CPU_COMPILE_SSE4_2=1 -DCV_CPU_COMPILE_SSE4_1=1
+objs{simd/*_sse4_2}: cxx.poptions += -DCV_CPU_DISPATCH_MODE=SSE4_2 \
+                                      -DCV_CPU_COMPILE_SSE4_2=1 -DCV_CPU_COMPILE_SSE4_1=1
+if ($cxx.class != 'msvc')
+{
+  obja{simd/*_sse4_2}: cxx.coptions += -msse4.2
+  objs{simd/*_sse4_2}: cxx.coptions += -msse4.2
+}
+
+obja{simd/*_avx2}: cxx.poptions += -DCV_CPU_DISPATCH_MODE=AVX2 -DCV_CPU_COMPILE_AVX2=1
+objs{simd/*_avx2}: cxx.poptions += -DCV_CPU_DISPATCH_MODE=AVX2 -DCV_CPU_COMPILE_AVX2=1
+if ($cxx.class == 'msvc')
+{
+  obja{simd/*_avx2}: cxx.coptions += /arch:AVX2
+  objs{simd/*_avx2}: cxx.coptions += /arch:AVX2
+}
+else
+{
+  obja{simd/*_avx2}: cxx.coptions += -mavx2
+  objs{simd/*_avx2}: cxx.coptions += -mavx2
+}
 
 # Build options.
 #
@@ -35,13 +76,23 @@ src_pfx_inc = [dir_path] $src_root/include/
 out_pfx_src = [dir_path] $out_root/src/
 src_pfx_src = [dir_path] $src_root/src/
 
-cxx.poptions =+ "-I$out_pfx_src" "-I$src_pfx_src" \
+cxx.poptions =+ "-I$out_pfx_src" "-I$src_pfx_src" "-I$src_pfx_src/simd" \
                 "-I$out_pfx_inc" "-I$src_pfx_inc"
 
 # OpenCV's own module sources gate their private headers on this macro
 # (upstream's CMake build defines it for every module's own compilation).
 #
 cxx.poptions += -D__OPENCV_BUILD=1
+
+# Tell the dispatch machinery (cv_cpu_helper.h's CV_CPU_CALL_*/CV_TRY_*
+# macros) which ISA dispatch tiers this module ships. These are per-module
+# defines, NOT placed in cv_cpu_config.h, so that other modules that lack
+# the corresponding per-ISA TUs are unaffected.
+#
+if ($cxx.target.cpu == 'x86_64')
+  cxx.poptions += -DCV_CPU_DISPATCH_COMPILE_SSE4_1=1 \
+                  -DCV_CPU_DISPATCH_COMPILE_SSE4_2=1 \
+                  -DCV_CPU_DISPATCH_COMPILE_AVX2=1
 
 # system.cpp calls CoCreateGuid for temp names (upstream issue 19648).
 #
